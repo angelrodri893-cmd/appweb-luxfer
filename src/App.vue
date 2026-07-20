@@ -34,8 +34,8 @@ const closeMenu = () => {
 <template>
   <div class="page-shell">
     <div class="announcement">
-      <p>Un espacio creado para cuidar de ti</p>
-      <a href="#citas">Solicita tu cita <span aria-hidden="true">→</span></a>
+      <p>Hoy también puedes elegirte a ti</p>
+      <a href="#citas">Agenda tu momento <span aria-hidden="true">→</span></a>
     </div>
 
     <header class="site-header">
@@ -61,10 +61,9 @@ const closeMenu = () => {
         <a href="#inicio" @click="closeMenu">Inicio</a>
         <a href="#servicios" @click="closeMenu">Servicios</a>
         <a href="#productos" @click="closeMenu">Productos</a>
-        <a href="#experiencia" @click="closeMenu">Nosotros</a>
-        <a class="main-menu__account" href="#citas" @click="closeMenu">Mis citas</a>
+        <a href="#contacto" @click="closeMenu">Contacto</a>
         <a class="button button--primary button--small" href="#citas" @click="closeMenu">
-          Agendar ahora
+          Agendar cita
         </a>
       </nav>
     </header>
@@ -72,32 +71,32 @@ const closeMenu = () => {
     <main>
       <section id="inicio" class="hero" aria-labelledby="hero-title">
         <div class="hero__content">
-          <p class="section-label"><span></span>Tu bienestar, nuestra inspiración</p>
-          <h1 id="hero-title">Belleza que nace de sentirte bien.</h1>
+          <p class="section-label"><span></span>Cuidado que se siente bien</p>
+          <h1 id="hero-title">Un momento bonito para cuidar de ti.</h1>
           <p class="hero__lead">
-            Regálate una experiencia de cuidado cercana y personalizada. En LuxFer creamos un
-            momento pensado para ti, tu piel y tu bienestar.
+            En LuxFer queremos que te sientas cómoda, escuchada y especial. Ven a disfrutar una
+            pausa sencilla, tranquila y pensada para ti.
           </p>
 
           <div class="hero__actions">
             <a class="button button--primary" href="#citas">
-              Reservar una experiencia
+              Quiero agendar
               <span aria-hidden="true">↗</span>
             </a>
             <a class="inline-link" href="#servicios">
-              Explorar servicios
+              Ver servicios
               <span aria-hidden="true">↓</span>
             </a>
           </div>
 
           <div class="hero__details" aria-label="Información destacada">
             <div>
-              <strong>Atención personalizada</strong>
-              <span>Cada experiencia comienza escuchándote.</span>
+              <strong>Te escuchamos</strong>
+              <span>El cuidado se adapta a lo que necesitas.</span>
             </div>
             <div>
-              <strong>Reserva sencilla</strong>
-              <span>Selecciona el momento ideal para ti.</span>
+              <strong>Tú eliges el momento</strong>
+              <span>Busca el horario que mejor te funcione.</span>
             </div>
           </div>
         </div>
@@ -116,21 +115,20 @@ const closeMenu = () => {
       </section>
 
       <section class="value-bar" aria-label="Valores de LuxFer">
-        <p><span>01</span>Asesoría cercana</p>
-        <p><span>02</span>Experiencias personalizadas</p>
-        <p><span>03</span>Ambiente de confianza</p>
+        <p><span>01</span>Atención cercana</p>
+        <p><span>02</span>Cuidado a tu ritmo</p>
+        <p><span>03</span>Reserva sin complicaciones</p>
       </section>
 
       <section id="servicios" class="section services" aria-labelledby="services-title">
         <div class="section-heading">
           <div>
-            <p class="section-label"><span></span>Descubre tu ritual</p>
-            <h2 id="services-title">Un cuidado especial para cada necesidad.</h2>
+            <p class="section-label"><span></span>Servicios para ti</p>
+            <h2 id="services-title">Elige lo que te haga sentir bien.</h2>
           </div>
           <div class="section-heading__aside">
             <p>
-              Conoce nuestras categorías y encuentra la experiencia que mejor acompaña lo que
-              buscas para ti.
+              Conoce nuestras opciones con calma y encuentra ese cuidado que estabas buscando.
             </p>
             <a class="inline-link" href="#citas">Ver todos los servicios <span>→</span></a>
           </div>
@@ -160,11 +158,11 @@ const closeMenu = () => {
 
       <section id="experiencia" class="experience" aria-labelledby="experience-title">
         <div class="experience__intro">
-          <p class="section-label section-label--light"><span></span>Así funciona</p>
-          <h2 id="experience-title">Tu próxima experiencia comienza en tres pasos.</h2>
+          <p class="section-label section-label--light"><span></span>Así de sencillo</p>
+          <h2 id="experience-title">Reservar será muy fácil.</h2>
           <p>
-            Diseñamos un proceso claro para que puedas concentrarte en lo más importante:
-            disfrutar tu momento.
+            Solo tendrás que elegir lo que deseas, buscar un horario y esperar nuestra
+            confirmación.
           </p>
         </div>
 
@@ -172,22 +170,22 @@ const closeMenu = () => {
           <li>
             <span>01</span>
             <div>
-              <h3>Encuentra tu servicio</h3>
-              <p>Conoce los detalles, duración y recomendaciones de cada experiencia.</p>
+              <h3>Elige tu servicio</h3>
+              <p>Revisa las opciones y encuentra la que más te guste.</p>
             </div>
           </li>
           <li>
             <span>02</span>
             <div>
-              <h3>Selecciona tu horario</h3>
-              <p>Elige una fecha y una hora dentro de la disponibilidad mostrada.</p>
+              <h3>Busca tu horario</h3>
+              <p>Escoge una fecha y una hora que se acomoden a tu día.</p>
             </div>
           </li>
           <li>
             <span>03</span>
             <div>
-              <h3>Espera la confirmación</h3>
-              <p>Revisaremos tu solicitud y te informaremos cuando la cita esté confirmada.</p>
+              <h3>Recibe nuestra respuesta</h3>
+              <p>Te avisaremos cuando tu cita haya sido confirmada.</p>
             </div>
           </li>
         </ol>
@@ -202,11 +200,11 @@ const closeMenu = () => {
         </div>
 
         <div class="products__content">
-          <p class="section-label"><span></span>Selección LuxFer</p>
-          <h2 id="products-title">Tu rutina de cuidado también continúa en casa.</h2>
+          <p class="section-label"><span></span>Para cuidarte en casa</p>
+          <h2 id="products-title">Productos sencillos para acompañar tu rutina.</h2>
           <p>
-            Descubre productos de skincare seleccionados para complementar tu bienestar. Podrás
-            consultar disponibilidad y recibir asesoría directamente por WhatsApp.
+            Encontrarás productos de skincare y podrás preguntarnos por WhatsApp cuál puede
+            acompañar mejor tu cuidado diario.
           </p>
           <a class="button button--outline" href="#contacto">
             Conocer productos
@@ -217,16 +215,16 @@ const closeMenu = () => {
 
       <section id="citas" class="booking" aria-labelledby="booking-title">
         <div class="booking__copy">
-          <p class="section-label section-label--light"><span></span>Tu tiempo es ahora</p>
-          <h2 id="booking-title">Haz una pausa. Nosotros cuidamos el resto.</h2>
+          <p class="section-label section-label--light"><span></span>Cuando tú quieras</p>
+          <h2 id="booking-title">¿Te gustaría visitarnos?</h2>
         </div>
         <div class="booking__action">
           <p>
-            El módulo de citas estará disponible en el siguiente avance. Aquí podrás escoger tu
-            servicio, fecha y horario.
+            Muy pronto podrás escoger desde aquí tu servicio, fecha y horario de una forma rápida
+            y clara.
           </p>
           <a class="button button--light" href="#contacto">
-            Quiero recibir información
+            Quiero saber más
             <span aria-hidden="true">↗</span>
           </a>
         </div>
@@ -240,11 +238,11 @@ const closeMenu = () => {
           <span class="brand__name">LuxFer</span>
           <small>Centro de estética</small>
         </a>
-        <p>Cuidado auténtico, atención cercana y un momento creado especialmente para ti.</p>
+        <p>Un espacio sencillo y agradable para regalarte el cuidado que mereces.</p>
         <nav aria-label="Navegación del pie de página">
           <a href="#servicios">Servicios</a>
           <a href="#productos">Productos</a>
-          <a href="#experiencia">Nosotros</a>
+          <a href="#inicio">Inicio</a>
           <a href="#citas">Citas</a>
         </nav>
       </div>
