@@ -1054,7 +1054,7 @@ a:focus-visible {
   }
 }
 
-/* Ajustes para moviles y pantallas reducidas. */
+/* Ajustes para moviles y pantallas. */
 @media (max-width: 700px) {
   .aviso-superior {
     justify-content: space-between;
