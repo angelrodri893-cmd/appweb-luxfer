@@ -1,31 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap');
 
+/* Fuentes y colores compartidos por todo el sitio. */
 :root {
-  --plum-950: #2c1b22;
-  --plum-900: #3d2430;
-  --plum-700: #683e50;
-  --rose-600: #a95469;
-  --rose-500: #c66f84;
-  --rose-400: #d88fa0;
-  --rose-300: #e7b8c2;
-  --rose-200: #f2d6dc;
-  --rose-100: #fae9ed;
-  --rose-50: #fff6f8;
-  --cream-50: #fcfaf7;
-  --cream-100: #f6f0e9;
-  --cream-200: #eaded2;
-  --sage-300: #b5b8a8;
-  --sand-300: #d7bfa7;
-  --ink: #2e2729;
-  --muted: #74696c;
-  --line: rgba(61, 36, 48, 0.14);
-  --white: #fff;
-  --serif: 'Playfair Display', Georgia, serif;
-  --logo: 'Cormorant Garamond', 'Times New Roman', serif;
-  --sans: 'DM Sans', 'Segoe UI', sans-serif;
-  color: var(--ink);
-  background: var(--cream-50);
-  font-family: var(--sans);
+  --ciruela-950: #2c1b22;
+  --ciruela-900: #3d2430;
+  --ciruela-700: #683e50;
+  --rosa-600: #a95469;
+  --rosa-500: #c66f84;
+  --rosa-400: #d88fa0;
+  --rosa-300: #e7b8c2;
+  --rosa-200: #f2d6dc;
+  --rosa-100: #fae9ed;
+  --rosa-50: #fff6f8;
+  --crema-50: #fcfaf7;
+  --crema-100: #f6f0e9;
+  --crema-200: #eaded2;
+  --salvia-300: #b5b8a8;
+  --arena-300: #d7bfa7;
+  --texto-principal: #2e2729;
+  --texto-suave: #74696c;
+  --borde-suave: rgba(61, 36, 48, 0.14);
+  --blanco: #fff;
+  --fuente-encabezados: 'Playfair Display', Georgia, serif;
+  --fuente-logo: 'Cormorant Garamond', 'Times New Roman', serif;
+  --fuente-texto: 'DM Sans', 'Segoe UI', sans-serif;
+  color: var(--texto-principal);
+  background: var(--crema-50);
+  font-family: var(--fuente-texto);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -43,7 +44,7 @@ html {
 body {
   min-width: 320px;
   margin: 0;
-  background: var(--cream-50);
+  background: var(--crema-50);
   font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
@@ -52,7 +53,7 @@ body {
 body,
 button,
 a {
-  font-family: var(--sans);
+  font-family: var(--fuente-texto);
 }
 
 a {
@@ -75,12 +76,12 @@ a:focus-visible {
   outline-offset: 4px;
 }
 
-.page-shell {
+.contenedor-sitio {
   min-height: 100vh;
   overflow: hidden;
 }
 
-.announcement {
+.aviso-superior {
   display: flex;
   min-height: 36px;
   align-items: center;
@@ -88,24 +89,24 @@ a:focus-visible {
   gap: 28px;
   padding: 8px 20px;
   color: rgba(255, 255, 255, 0.92);
-  background: var(--rose-600);
+  background: var(--rosa-600);
   font-size: 12px;
 }
 
-.announcement p {
+.aviso-superior p {
   margin: 0;
 }
 
-.announcement a {
+.aviso-superior a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--white);
+  color: var(--blanco);
   font-weight: 600;
   text-decoration: none;
 }
 
-.site-header {
+.encabezado-sitio {
   position: relative;
   z-index: 30;
   display: flex;
@@ -114,21 +115,21 @@ a:focus-visible {
   justify-content: space-between;
   padding: 0 clamp(22px, 5.5vw, 86px);
   background: rgba(252, 250, 247, 0.97);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--borde-suave);
 }
 
-.brand {
+.marca {
   position: relative;
   display: inline-grid;
   grid-template-columns: 47px auto;
   grid-template-rows: auto auto;
   column-gap: 0;
   align-items: center;
-  color: var(--plum-900);
+  color: var(--ciruela-900);
   text-decoration: none;
 }
 
-.brand__symbol {
+.marca__inicial {
   position: relative;
   z-index: 2;
   display: grid;
@@ -136,14 +137,14 @@ a:focus-visible {
   height: 48px;
   grid-row: 1 / 3;
   place-items: center;
-  color: var(--rose-600);
+  color: var(--rosa-600);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(242, 214, 220, 0.62));
   border: 1px solid rgba(169, 84, 105, 0.46);
   border-radius: 50%;
   box-shadow:
     inset 0 0 0 4px rgba(255, 255, 255, 0.55),
     0 5px 14px rgba(61, 36, 48, 0.08);
-  font-family: var(--logo);
+  font-family: var(--fuente-logo);
   font-size: 30px;
   font-weight: 600;
   font-style: italic;
@@ -151,13 +152,13 @@ a:focus-visible {
   transform: rotate(-5deg);
 }
 
-.brand__name {
+.marca__nombre {
   position: relative;
   z-index: 3;
   align-self: end;
   margin-left: -8px;
   padding-right: 9px;
-  font-family: var(--logo);
+  font-family: var(--fuente-logo);
   font-size: 31px;
   font-weight: 600;
   font-style: italic;
@@ -166,7 +167,7 @@ a:focus-visible {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
-.brand__name::after {
+.marca__nombre::after {
   position: absolute;
   right: 5px;
   bottom: -5px;
@@ -178,11 +179,11 @@ a:focus-visible {
   transform: rotate(-2deg);
 }
 
-.brand small {
+.marca small {
   align-self: start;
   margin-top: 8px;
   margin-left: 1px;
-  color: var(--muted);
+  color: var(--texto-suave);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.21em;
@@ -190,13 +191,14 @@ a:focus-visible {
   text-transform: uppercase;
 }
 
-.main-menu {
+/* Panel de enlaces mostrado en computadoras. */
+.panel-principal {
   display: flex;
   align-items: center;
   gap: clamp(19px, 2.4vw, 38px);
 }
 
-.main-menu > a:not(.button) {
+.panel-principal > a:not(.control) {
   position: relative;
   padding: 10px 0;
   color: #554a4e;
@@ -205,23 +207,23 @@ a:focus-visible {
   text-decoration: none;
 }
 
-.main-menu > a:not(.button)::after {
+.panel-principal > a:not(.control)::after {
   position: absolute;
   right: 0;
   bottom: 3px;
   left: 0;
   height: 1px;
-  background: var(--rose-500);
+  background: var(--rosa-500);
   content: '';
   transform: scaleX(0);
   transition: transform 180ms ease;
 }
 
-.main-menu > a:not(.button):hover::after {
+.panel-principal > a:not(.control):hover::after {
   transform: scaleX(1);
 }
 
-.menu-button {
+.control-panel {
   display: none;
   width: 44px;
   height: 44px;
@@ -231,27 +233,27 @@ a:focus-visible {
   cursor: pointer;
 }
 
-.menu-button span {
+.control-panel span {
   display: block;
   width: 100%;
   height: 1px;
   margin: 7px 0;
-  background: var(--plum-900);
+  background: var(--ciruela-900);
   transform-origin: center;
   transition:
     transform 180ms ease,
     opacity 180ms ease;
 }
 
-.menu-button[aria-expanded='true'] span:first-child {
+.control-panel[aria-expanded='true'] span:first-child {
   transform: translateY(4px) rotate(45deg);
 }
 
-.menu-button[aria-expanded='true'] span:last-child {
+.control-panel[aria-expanded='true'] span:last-child {
   transform: translateY(-4px) rotate(-45deg);
 }
 
-.button {
+.control {
   display: inline-flex;
   min-height: 52px;
   align-items: center;
@@ -272,163 +274,164 @@ a:focus-visible {
     transform 180ms ease;
 }
 
-.button:hover {
+.control:hover {
   transform: translateY(-2px);
 }
 
-.button--small {
+.control--compacto {
   min-height: 42px;
   padding: 0 19px;
 }
 
-.button--primary {
-  color: var(--white);
-  background: var(--rose-500);
+.control--principal {
+  color: var(--blanco);
+  background: var(--rosa-500);
 }
 
-.button--primary:hover {
-  background: var(--rose-600);
+.control--principal:hover {
+  background: var(--rosa-600);
 }
 
-.button--outline {
-  color: var(--plum-900);
+.control--borde {
+  color: var(--ciruela-900);
   border-color: rgba(61, 36, 48, 0.45);
 }
 
-.button--outline:hover {
-  color: var(--white);
-  background: var(--plum-900);
-  border-color: var(--plum-900);
+.control--borde:hover {
+  color: var(--blanco);
+  background: var(--ciruela-900);
+  border-color: var(--ciruela-900);
 }
 
-.button--light {
-  color: var(--plum-900);
-  background: var(--cream-50);
+.control--claro {
+  color: var(--ciruela-900);
+  background: var(--crema-50);
 }
 
-.hero {
+/* Portada dividida entre el contenido y la imagen principal. */
+.portada {
   display: grid;
   min-height: calc(100vh - 122px);
   grid-template-columns: minmax(420px, 0.86fr) minmax(560px, 1.14fr);
-  background: var(--rose-50);
+  background: var(--rosa-50);
 }
 
-.hero__content {
+.portada__contenido {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
   justify-content: center;
   padding: clamp(72px, 8vw, 126px) clamp(30px, 6vw, 94px);
-  animation: content-reveal 650ms ease both;
+  animation: mostrar-contenido 650ms ease both;
 }
 
-.section-label {
+.etiqueta-bloque {
   display: flex;
   align-items: center;
   gap: 12px;
   margin: 0 0 25px;
-  color: var(--rose-500);
+  color: var(--rosa-500);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
-.section-label > span {
+.etiqueta-bloque > span {
   width: 28px;
   height: 1px;
   background: currentColor;
 }
 
-.hero h1,
-.section-heading h2,
-.experience h2,
-.products h2,
-.booking h2 {
+.portada h1,
+.cabecera-bloque h2,
+.proceso-reserva h2,
+.productos h2,
+.llamado-citas h2 {
   margin: 0;
-  color: var(--plum-950);
-  font-family: var(--serif);
+  color: var(--ciruela-950);
+  font-family: var(--fuente-encabezados);
   font-weight: 400;
   letter-spacing: -0.035em;
   line-height: 1.04;
 }
 
-.hero h1 {
+.portada h1 {
   max-width: 650px;
   font-size: clamp(52px, 5.7vw, 84px);
 }
 
-.hero__lead {
+.portada__detalle {
   max-width: 560px;
   margin: 28px 0 0;
-  color: var(--muted);
+  color: var(--texto-suave);
   font-size: clamp(16px, 1.25vw, 19px);
   line-height: 1.8;
 }
 
-.hero__actions {
+.portada__acciones {
   display: flex;
   align-items: center;
   gap: 30px;
   margin-top: 38px;
 }
 
-.inline-link {
+.enlace-simple {
   display: inline-flex;
   align-items: center;
   gap: 14px;
   padding: 10px 0;
-  color: var(--plum-700);
+  color: var(--ciruela-700);
   border-bottom: 1px solid rgba(104, 62, 80, 0.38);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
 }
 
-.inline-link span {
+.enlace-simple span {
   transition: transform 180ms ease;
 }
 
-.inline-link:hover span {
+.enlace-simple:hover span {
   transform: translateX(4px);
 }
 
-.hero__details {
+.portada__detalles {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(2, 1fr);
   gap: 28px;
   margin-top: clamp(52px, 7vw, 96px);
   padding-top: 25px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--borde-suave);
 }
 
-.hero__details div {
+.portada__detalles div {
   display: flex;
   flex-direction: column;
 }
 
-.hero__details strong {
-  color: var(--plum-900);
-  font-family: var(--serif);
+.portada__detalles strong {
+  color: var(--ciruela-900);
+  font-family: var(--fuente-encabezados);
   font-size: 19px;
   font-weight: 500;
 }
 
-.hero__details span {
+.portada__detalles span {
   margin-top: 7px;
-  color: var(--muted);
+  color: var(--texto-suave);
   font-size: 13px;
   line-height: 1.55;
 }
 
-.hero__media {
+.portada__imagen {
   position: relative;
   min-height: 640px;
   overflow: hidden;
 }
 
-.hero__media::after {
+.portada__imagen::after {
   position: absolute;
   inset: 0;
   background: linear-gradient(90deg, rgba(63, 42, 46, 0.08), transparent 35%);
@@ -436,14 +439,14 @@ a:focus-visible {
   pointer-events: none;
 }
 
-.hero__media img {
+.portada__imagen img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 55% center;
 }
 
-.hero__badge {
+.portada__distintivo {
   position: absolute;
   z-index: 2;
   right: 34px;
@@ -452,36 +455,36 @@ a:focus-visible {
   align-items: center;
   gap: 13px;
   padding: 16px 19px;
-  color: var(--white);
+  color: var(--blanco);
   background: rgba(169, 84, 105, 0.9);
   border-radius: 18px;
   backdrop-filter: blur(12px);
 }
 
-.hero__badge > span {
-  color: var(--rose-300);
+.portada__distintivo > span {
+  color: var(--rosa-300);
   font-size: 20px;
 }
 
-.hero__badge p {
+.portada__distintivo p {
   display: flex;
   flex-direction: column;
   margin: 0;
 }
 
-.hero__badge strong {
-  font-family: var(--serif);
+.portada__distintivo strong {
+  font-family: var(--fuente-encabezados);
   font-size: 17px;
   font-weight: 400;
 }
 
-.hero__badge small {
+.portada__distintivo small {
   margin-top: 3px;
   color: rgba(255, 255, 255, 0.64);
   font-size: 12px;
 }
 
-.hero__vertical-text {
+.portada__texto-vertical {
   position: absolute;
   z-index: 2;
   top: 32px;
@@ -495,14 +498,14 @@ a:focus-visible {
   writing-mode: vertical-rl;
 }
 
-.value-bar {
+.barra-valores {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  color: var(--plum-900);
-  background: var(--rose-200);
+  color: var(--ciruela-900);
+  background: var(--rosa-200);
 }
 
-.value-bar p {
+.barra-valores p {
   display: flex;
   min-height: 96px;
   align-items: center;
@@ -510,54 +513,55 @@ a:focus-visible {
   gap: 16px;
   margin: 0;
   border-right: 1px solid rgba(104, 62, 80, 0.14);
-  font-family: var(--serif);
+  font-family: var(--fuente-encabezados);
   font-size: 19px;
 }
 
-.value-bar p:last-child {
+.barra-valores p:last-child {
   border: 0;
 }
 
-.value-bar span {
-  color: var(--rose-600);
-  font-family: var(--sans);
+.barra-valores span {
+  color: var(--rosa-600);
+  font-family: var(--fuente-texto);
   font-size: 12px;
   letter-spacing: 0.1em;
 }
 
-.section {
+.bloque {
   padding: clamp(84px, 10vw, 150px) clamp(22px, 6vw, 94px);
 }
 
-.section-heading {
+.cabecera-bloque {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.6fr);
   align-items: end;
   gap: clamp(54px, 8vw, 120px);
 }
 
-.section-heading h2,
-.experience h2,
-.products h2,
-.booking h2 {
+.cabecera-bloque h2,
+.proceso-reserva h2,
+.productos h2,
+.llamado-citas h2 {
   font-size: clamp(42px, 4.8vw, 66px);
 }
 
-.section-heading__aside > p {
+.cabecera-bloque__texto > p {
   margin: 0 0 23px;
-  color: var(--muted);
+  color: var(--texto-suave);
   font-size: 16px;
   line-height: 1.8;
 }
 
-.service-grid {
+.lista-servicios {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-top: 66px;
 }
 
-.service-card {
+/* Tarjetas que resumen los servicios disponibles. */
+.tarjeta-servicio {
   position: relative;
   min-height: 510px;
   padding: 25px;
@@ -568,44 +572,44 @@ a:focus-visible {
     box-shadow 220ms ease;
 }
 
-.service-card:hover {
+.tarjeta-servicio:hover {
   box-shadow: 0 24px 50px rgba(61, 36, 48, 0.13);
   transform: translateY(-7px);
 }
 
-.service-card--rose {
+.tarjeta-servicio--rosa {
   background: #f5dce3;
 }
 
-.service-card--sand {
+.tarjeta-servicio--arena {
   background: #f8e9e6;
 }
 
-.service-card--sage {
+.tarjeta-servicio--salvia {
   background: #eee3e6;
 }
 
-.service-card__number {
+.tarjeta-servicio__numero {
   color: rgba(61, 36, 48, 0.54);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.12em;
 }
 
-.service-card__art {
+.tarjeta-servicio__adorno {
   position: relative;
   height: 225px;
   margin: 12px 0 6px;
 }
 
-.service-card__orb,
-.service-card__vessel,
-.service-card__line {
+.tarjeta-servicio__aro,
+.tarjeta-servicio__envase,
+.tarjeta-servicio__trazo {
   position: absolute;
   display: block;
 }
 
-.service-card__orb {
+.tarjeta-servicio__aro {
   top: 12px;
   left: calc(50% - 72px);
   width: 144px;
@@ -615,7 +619,7 @@ a:focus-visible {
   border-radius: 50%;
 }
 
-.service-card__vessel {
+.tarjeta-servicio__envase {
   z-index: 2;
   right: calc(50% - 55px);
   bottom: 12px;
@@ -627,7 +631,7 @@ a:focus-visible {
   box-shadow: 0 20px 35px rgba(73, 47, 57, 0.12);
 }
 
-.service-card__line {
+.tarjeta-servicio__trazo {
   z-index: 3;
   right: calc(50% - 70px);
   bottom: 44px;
@@ -637,22 +641,22 @@ a:focus-visible {
   transform: rotate(-12deg);
 }
 
-.service-card__content {
+.tarjeta-servicio__contenido {
   position: absolute;
   right: 25px;
   bottom: 24px;
   left: 25px;
 }
 
-.service-card h3 {
+.tarjeta-servicio h3 {
   margin: 0 0 10px;
-  color: var(--plum-900);
-  font-family: var(--serif);
+  color: var(--ciruela-900);
+  font-family: var(--fuente-encabezados);
   font-size: 31px;
   font-weight: 400;
 }
 
-.service-card p {
+.tarjeta-servicio p {
   min-height: 56px;
   margin: 0;
   color: rgba(46, 39, 41, 0.68);
@@ -660,7 +664,7 @@ a:focus-visible {
   line-height: 1.7;
 }
 
-.service-card__content a {
+.tarjeta-servicio__contenido a {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -672,25 +676,26 @@ a:focus-visible {
   text-decoration: none;
 }
 
-.experience {
+/* Pasos que explican el futuro proceso de reserva. */
+.proceso-reserva {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(420px, 0.9fr);
   gap: clamp(70px, 10vw, 160px);
   padding: clamp(86px, 10vw, 150px) clamp(22px, 6vw, 94px);
-  color: var(--cream-50);
-  background: var(--rose-600);
+  color: var(--crema-50);
+  background: var(--rosa-600);
 }
 
-.section-label--light {
-  color: var(--rose-300);
+.etiqueta-bloque--clara {
+  color: var(--rosa-300);
 }
 
-.experience h2,
-.booking h2 {
-  color: var(--cream-50);
+.proceso-reserva h2,
+.llamado-citas h2 {
+  color: var(--crema-50);
 }
 
-.experience__intro > p:last-child {
+.proceso-reserva__intro > p:last-child {
   max-width: 560px;
   margin: 28px 0 0;
   color: rgba(255, 255, 255, 0.58);
@@ -698,14 +703,14 @@ a:focus-visible {
   line-height: 1.8;
 }
 
-.steps-list {
+.lista-pasos {
   margin: 0;
   padding: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.18);
   list-style: none;
 }
 
-.steps-list li {
+.lista-pasos li {
   display: grid;
   grid-template-columns: 45px 1fr;
   gap: 22px;
@@ -713,35 +718,36 @@ a:focus-visible {
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.steps-list li > span {
-  color: var(--rose-300);
+.lista-pasos li > span {
+  color: var(--rosa-300);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
 }
 
-.steps-list h3 {
+.lista-pasos h3 {
   margin: 0 0 8px;
-  font-family: var(--serif);
+  font-family: var(--fuente-encabezados);
   font-size: 25px;
   font-weight: 400;
 }
 
-.steps-list p {
+.lista-pasos p {
   margin: 0;
   color: rgba(255, 255, 255, 0.55);
   font-size: 14px;
   line-height: 1.65;
 }
 
-.products {
+/* Muestra visual de los productos disponibles. */
+.productos {
   display: grid;
   min-height: 670px;
   grid-template-columns: 1fr 1fr;
-  background: var(--rose-100);
+  background: var(--rosa-100);
 }
 
-.products__showcase {
+.productos__muestra {
   position: relative;
   overflow: hidden;
   background:
@@ -749,7 +755,7 @@ a:focus-visible {
     linear-gradient(145deg, #e4b7c2, #f7e0e5);
 }
 
-.products__showcase::after {
+.productos__muestra::after {
   position: absolute;
   right: 20%;
   bottom: 14%;
@@ -761,7 +767,7 @@ a:focus-visible {
   content: '';
 }
 
-.products__sun {
+.productos__fondo-circular {
   position: absolute;
   top: 18%;
   left: 18%;
@@ -772,15 +778,15 @@ a:focus-visible {
   border-radius: 50%;
 }
 
-.products__jar,
-.products__dropper {
+.productos__tarro,
+.productos__gotero {
   position: absolute;
   z-index: 2;
   bottom: 18%;
   box-shadow: 0 32px 42px rgba(72, 43, 53, 0.2);
 }
 
-.products__jar {
+.productos__tarro {
   left: 26%;
   width: 165px;
   height: 140px;
@@ -789,18 +795,18 @@ a:focus-visible {
   border-radius: 30px 30px 55px 55px;
 }
 
-.products__jar::before {
+.productos__tarro::before {
   position: absolute;
   top: -28px;
   left: 10px;
   width: 145px;
   height: 35px;
-  background: var(--plum-700);
+  background: var(--ciruela-700);
   border-radius: 14px 14px 5px 5px;
   content: '';
 }
 
-.products__dropper {
+.productos__gotero {
   right: 24%;
   width: 105px;
   height: 225px;
@@ -809,18 +815,18 @@ a:focus-visible {
   border-radius: 42px 42px 18px 18px;
 }
 
-.products__dropper::before {
+.productos__gotero::before {
   position: absolute;
   top: -55px;
   left: 22px;
   width: 61px;
   height: 62px;
-  background: var(--plum-900);
+  background: var(--ciruela-900);
   border-radius: 18px 18px 3px 3px;
   content: '';
 }
 
-.products__branch {
+.productos__rama {
   position: absolute;
   z-index: 1;
   top: 18%;
@@ -832,7 +838,7 @@ a:focus-visible {
   transform: rotate(23deg);
 }
 
-.products__content {
+.productos__contenido {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -840,36 +846,36 @@ a:focus-visible {
   padding: 80px clamp(34px, 8vw, 125px);
 }
 
-.products__content > p:not(.section-label) {
+.productos__contenido > p:not(.etiqueta-bloque) {
   margin: 28px 0 34px;
-  color: var(--muted);
+  color: var(--texto-suave);
   font-size: 16px;
   line-height: 1.8;
 }
 
-.booking {
+.llamado-citas {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
   align-items: end;
   gap: clamp(60px, 9vw, 140px);
   padding: clamp(84px, 9vw, 130px) clamp(22px, 6vw, 94px);
-  color: var(--cream-50);
+  color: var(--crema-50);
   background: #82465a;
 }
 
-.booking__action p {
+.llamado-citas__accion p {
   margin: 0 0 28px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 15px;
   line-height: 1.75;
 }
 
-.footer {
+.pie-sitio {
   padding: 62px clamp(22px, 6vw, 94px) 25px;
-  background: var(--cream-50);
+  background: var(--crema-50);
 }
 
-.footer__top {
+.pie-sitio__principal {
   display: grid;
   grid-template-columns: 0.8fr 1.25fr 0.9fr;
   align-items: start;
@@ -877,40 +883,40 @@ a:focus-visible {
   padding-bottom: 52px;
 }
 
-.footer__top > p {
+.pie-sitio__principal > p {
   max-width: 420px;
   margin: 2px 0 0;
-  color: var(--muted);
+  color: var(--texto-suave);
   font-size: 15px;
   line-height: 1.75;
 }
 
-.footer__top nav {
+.pie-sitio__principal nav {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px 32px;
 }
 
-.footer__top nav a {
-  color: var(--muted);
+.pie-sitio__principal nav a {
+  color: var(--texto-suave);
   font-size: 14px;
   text-decoration: none;
 }
 
-.footer__top nav a:hover {
-  color: var(--rose-500);
+.pie-sitio__principal nav a:hover {
+  color: var(--rosa-500);
 }
 
-.footer__bottom {
+.pie-sitio__inferior {
   display: flex;
   justify-content: space-between;
   padding-top: 21px;
   color: #948a8d;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--borde-suave);
   font-size: 12px;
 }
 
-@keyframes content-reveal {
+@keyframes mostrar-contenido {
   from {
     opacity: 0;
     transform: translateY(18px);
@@ -921,16 +927,17 @@ a:focus-visible {
   }
 }
 
+/* Ajustes para tabletas y pantallas medianas. */
 @media (max-width: 1080px) {
-  .site-header {
+  .encabezado-sitio {
     min-height: 76px;
   }
 
-  .menu-button {
+  .control-panel {
     display: block;
   }
 
-  .main-menu {
+  .panel-principal {
     position: absolute;
     top: 76px;
     right: 0;
@@ -940,8 +947,8 @@ a:focus-visible {
     flex-direction: column;
     gap: 0;
     padding: 17px 24px 26px;
-    background: var(--cream-50);
-    border-bottom: 1px solid var(--line);
+    background: var(--crema-50);
+    border-bottom: 1px solid var(--borde-suave);
     box-shadow: 0 18px 32px rgba(44, 27, 34, 0.1);
     opacity: 0;
     pointer-events: none;
@@ -951,68 +958,68 @@ a:focus-visible {
       transform 180ms ease;
   }
 
-  .main-menu--open {
+  .panel-principal--abierto {
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0);
   }
 
-  .main-menu > a:not(.button) {
+  .panel-principal > a:not(.control) {
     display: flex;
     min-height: 48px;
     align-items: center;
     padding: 13px 0;
   }
 
-  .main-menu .button {
+  .panel-principal .control {
     margin-top: 10px;
   }
 
-  .hero {
+  .portada {
     grid-template-columns: 1fr;
   }
 
-  .hero__content {
+  .portada__contenido {
     min-height: min(680px, calc(100svh - 112px));
   }
 
-  .hero__media {
+  .portada__imagen {
     min-height: 0;
     aspect-ratio: 16 / 10;
   }
 
-  .service-grid {
+  .lista-servicios {
     grid-template-columns: 1fr;
   }
 
-  .service-card {
+  .tarjeta-servicio {
     min-height: 460px;
   }
 
-  .section-heading,
-  .experience,
-  .booking {
+  .cabecera-bloque,
+  .proceso-reserva,
+  .llamado-citas {
     grid-template-columns: 1fr;
     gap: 50px;
   }
 
-  .section-heading__aside {
+  .cabecera-bloque__texto {
     max-width: 560px;
   }
 
-  .products {
+  .productos {
     grid-template-columns: 1fr;
   }
 
-  .products__showcase {
+  .productos__muestra {
     min-height: 560px;
   }
 
-  .footer__top {
+  .pie-sitio__principal {
     grid-template-columns: 1fr 1fr;
   }
 
-  .footer__top nav {
+  .pie-sitio__principal nav {
     grid-column: 1 / -1;
   }
 }
@@ -1022,33 +1029,34 @@ a:focus-visible {
     scroll-padding-top: 78px;
   }
 
-  .section-heading {
+  .cabecera-bloque {
     gap: 34px;
   }
 
-  .service-grid {
+  .lista-servicios {
     gap: 20px;
   }
 
-  .service-card {
+  .tarjeta-servicio {
     min-height: 430px;
   }
 
-  .experience {
+  .proceso-reserva {
     gap: 42px;
   }
 
-  .products__showcase {
+  .productos__muestra {
     min-height: 500px;
   }
 
-  .footer__top {
+  .pie-sitio__principal {
     gap: 44px;
   }
 }
 
+/* Ajustes para moviles y pantallas reducidas. */
 @media (max-width: 700px) {
-  .announcement {
+  .aviso-superior {
     justify-content: space-between;
     gap: 10px;
     min-height: 40px;
@@ -1056,44 +1064,44 @@ a:focus-visible {
     font-size: 10px;
   }
 
-  .announcement p,
-  .announcement a {
+  .aviso-superior p,
+  .aviso-superior a {
     line-height: 1.35;
   }
 
-  .announcement p {
+  .aviso-superior p {
     max-width: 48%;
   }
 
-  .announcement a {
+  .aviso-superior a {
     justify-content: flex-end;
     text-align: right;
   }
 
-  .site-header {
+  .encabezado-sitio {
     padding: 0 19px;
   }
 
-  .brand__name {
+  .marca__nombre {
     font-size: 28px;
   }
 
-  .hero__content {
+  .portada__contenido {
     min-height: auto;
     padding: clamp(58px, 13vw, 74px) 20px 58px;
   }
 
-  .hero h1 {
+  .portada h1 {
     max-width: 590px;
     font-size: clamp(44px, 13.5vw, 64px);
     line-height: 1.01;
   }
 
-  .hero__lead {
+  .portada__detalle {
     font-size: 16px;
   }
 
-  .hero__actions {
+  .portada__acciones {
     width: 100%;
     align-items: stretch;
     flex-direction: column;
@@ -1101,44 +1109,44 @@ a:focus-visible {
     margin-top: 31px;
   }
 
-  .hero__actions .button {
+  .portada__acciones .control {
     width: 100%;
   }
 
-  .hero__actions .inline-link {
+  .portada__acciones .enlace-simple {
     align-self: flex-start;
   }
 
-  .hero__details {
+  .portada__detalles {
     grid-template-columns: 1fr;
     gap: 18px;
     margin-top: 54px;
   }
 
-  .hero__media {
+  .portada__imagen {
     min-height: 400px;
     aspect-ratio: 4 / 5;
   }
 
-  .hero__media img {
+  .portada__imagen img {
     object-position: 61% center;
   }
 
-  .hero__badge {
+  .portada__distintivo {
     right: 19px;
     bottom: 19px;
     left: 19px;
   }
 
-  .hero__vertical-text {
+  .portada__texto-vertical {
     display: none;
   }
 
-  .value-bar {
+  .barra-valores {
     grid-template-columns: 1fr;
   }
 
-  .value-bar p {
+  .barra-valores p {
     min-height: 78px;
     justify-content: flex-start;
     padding: 0 24px;
@@ -1147,93 +1155,93 @@ a:focus-visible {
     font-size: 18px;
   }
 
-  .section,
-  .experience,
-  .booking {
+  .bloque,
+  .proceso-reserva,
+  .llamado-citas {
     padding-right: 20px;
     padding-left: 20px;
   }
 
-  .section-heading h2,
-  .experience h2,
-  .products h2,
-  .booking h2 {
+  .cabecera-bloque h2,
+  .proceso-reserva h2,
+  .productos h2,
+  .llamado-citas h2 {
     font-size: clamp(40px, 12vw, 55px);
   }
 
-  .service-grid {
+  .lista-servicios {
     margin-top: 44px;
   }
 
-  .service-card {
+  .tarjeta-servicio {
     min-height: 430px;
     padding: 22px;
   }
 
-  .service-card__art {
+  .tarjeta-servicio__adorno {
     height: 205px;
   }
 
-  .service-card h3 {
+  .tarjeta-servicio h3 {
     font-size: 28px;
   }
 
-  .service-card__content {
+  .tarjeta-servicio__contenido {
     right: 22px;
     left: 22px;
   }
 
-  .experience {
+  .proceso-reserva {
     gap: 44px;
   }
 
-  .steps-list li {
+  .lista-pasos li {
     grid-template-columns: 35px 1fr;
   }
 
-  .products__showcase {
+  .productos__muestra {
     min-height: 430px;
   }
 
-  .products__jar {
+  .productos__tarro {
     left: 18%;
     transform: scale(0.82);
     transform-origin: bottom;
   }
 
-  .products__dropper {
+  .productos__gotero {
     right: 17%;
     transform: scale(0.82);
     transform-origin: bottom;
   }
 
-  .products__content {
+  .productos__contenido {
     padding: 72px 20px;
   }
 
-  .booking {
+  .llamado-citas {
     gap: 35px;
   }
 
-  .booking .button {
+  .llamado-citas .control {
     width: 100%;
   }
 
-  .footer {
+  .pie-sitio {
     padding: 52px 20px 24px;
   }
 
-  .footer__top {
+  .pie-sitio__principal {
     grid-template-columns: 1fr;
     gap: 32px;
   }
 
-  .footer__top nav {
+  .pie-sitio__principal nav {
     grid-column: auto;
     grid-template-columns: 1fr 1fr;
   }
 
-  .footer__bottom {
+  .pie-sitio__inferior {
     align-items: flex-start;
     flex-direction: column;
     gap: 9px;
@@ -1241,125 +1249,125 @@ a:focus-visible {
 }
 
 @media (max-width: 430px) {
-  .announcement p {
+  .aviso-superior p {
     display: none;
   }
 
-  .announcement {
+  .aviso-superior {
     justify-content: center;
   }
 
-  .announcement a {
+  .aviso-superior a {
     text-align: center;
   }
 
-  .site-header {
+  .encabezado-sitio {
     min-height: 72px;
   }
 
-  .main-menu {
+  .panel-principal {
     top: 72px;
     max-height: calc(100svh - 112px);
     overflow-y: auto;
   }
 
-  .brand {
+  .marca {
     grid-template-columns: 43px auto;
   }
 
-  .brand__symbol {
+  .marca__inicial {
     width: 44px;
     height: 44px;
     font-size: 27px;
   }
 
-  .brand__name {
+  .marca__nombre {
     margin-left: -7px;
     font-size: 26px;
   }
 
-  .brand small {
+  .marca small {
     margin-top: 7px;
     font-size: 8px;
     letter-spacing: 0.17em;
   }
 
-  .section-label {
+  .etiqueta-bloque {
     margin-bottom: 20px;
     font-size: 10px;
     letter-spacing: 0.16em;
   }
 
-  .hero h1 {
+  .portada h1 {
     font-size: clamp(41px, 12.8vw, 53px);
   }
 
-  .hero__lead {
+  .portada__detalle {
     margin-top: 22px;
     line-height: 1.7;
   }
 
-  .hero__details strong {
+  .portada__detalles strong {
     font-size: 18px;
   }
 
-  .hero__media {
+  .portada__imagen {
     min-height: 390px;
   }
 
-  .hero__badge {
+  .portada__distintivo {
     padding: 14px 16px;
   }
 
-  .section,
-  .experience,
-  .booking {
+  .bloque,
+  .proceso-reserva,
+  .llamado-citas {
     padding-top: 72px;
     padding-bottom: 72px;
   }
 
-  .section-heading h2,
-  .experience h2,
-  .products h2,
-  .booking h2 {
+  .cabecera-bloque h2,
+  .proceso-reserva h2,
+  .productos h2,
+  .llamado-citas h2 {
     font-size: clamp(38px, 11.5vw, 48px);
   }
 
-  .service-card {
+  .tarjeta-servicio {
     min-height: 410px;
   }
 
-  .service-card__art {
+  .tarjeta-servicio__adorno {
     height: 185px;
   }
 
-  .products__showcase {
+  .productos__muestra {
     min-height: 380px;
   }
 
-  .products__sun {
+  .productos__fondo-circular {
     top: 14%;
     left: 8%;
     width: 210px;
     height: 210px;
   }
 
-  .products__jar {
+  .productos__tarro {
     left: 10%;
     transform: scale(0.72);
   }
 
-  .products__dropper {
+  .productos__gotero {
     right: 9%;
     transform: scale(0.72);
   }
 
-  .products__content {
+  .productos__contenido {
     padding-top: 64px;
     padding-bottom: 68px;
   }
 
-  .footer__top nav {
+  .pie-sitio__principal nav {
     gap: 12px 20px;
   }
 }

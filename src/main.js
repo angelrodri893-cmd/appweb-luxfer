@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import './style.css'
-import App from './App.vue'
+import Sitio from './App.vue'
 
-createApp(App).mount('#app')
+// Inicia el sitio de Vue dentro del contenedor principal de index.html.
+createApp(Sitio).mount('#app')

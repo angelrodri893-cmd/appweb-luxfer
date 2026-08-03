@@ -1,95 +1,104 @@
 <script setup>
 import { ref } from 'vue'
-import heroImage from './assets/inicio-luxfer.jpg'
+import imagenPortada from './assets/inicio-luxfer.jpg'
 
-const menuOpen = ref(false)
-const currentYear = new Date().getFullYear()
+// Controla la apertura del panel en pantallas reducidas.
+const panelAbierto = ref(false)
+const periodoActual = new Date().getFullYear()
 
-const services = [
+// Datos provisionales; luego vendran desde la base de datos.
+const servicios = [
   {
     id: '01',
-    name: 'Rituales faciales',
-    description: 'Cuidado personalizado para limpiar, nutrir y devolverle luminosidad a tu piel.',
-    accent: 'rose',
+    nombre: 'Rituales faciales',
+    detalle: 'Cuidado personalizado para limpiar, nutrir y devolverle luminosidad a tu piel.',
+    tono: 'rosa',
   },
   {
     id: '02',
-    name: 'Bienestar corporal',
-    description: 'Una pausa para liberar tensiones y reconectar con la calma que tu cuerpo necesita.',
-    accent: 'sand',
+    nombre: 'Bienestar corporal',
+    detalle: 'Una pausa para liberar tensiones y reconectar con la calma que tu cuerpo necesita.',
+    tono: 'arena',
   },
   {
     id: '03',
-    name: 'Belleza esencial',
-    description: 'Detalles pensados para realzar tu belleza natural y acompañar tu estilo.',
-    accent: 'sage',
+    nombre: 'Belleza esencial',
+    detalle: 'Detalles pensados para realzar tu belleza natural y acompañar tu estilo.',
+    tono: 'salvia',
   },
 ]
 
-const closeMenu = () => {
-  menuOpen.value = false
+// Cierra el panel al elegir un enlace.
+const cerrarPanel = () => {
+  panelAbierto.value = false
 }
 </script>
 
 <template>
-  <div class="page-shell">
-    <div class="announcement">
+  <div class="contenedor-sitio">
+    <!-- Aviso y enlaces principales -->
+    <div class="aviso-superior">
       <p>Hoy también puedes elegirte a ti</p>
       <a href="#citas">Agenda tu momento <span aria-hidden="true">→</span></a>
     </div>
 
-    <header class="site-header">
-      <a class="brand" href="#inicio" aria-label="LuxFer, volver al inicio" @click="closeMenu">
-        <span class="brand__symbol" aria-hidden="true">L</span>
-        <span class="brand__name">LuxFer</span>
+    <header class="encabezado-sitio">
+      <a class="marca" href="#inicio" aria-label="LuxFer, volver al inicio" @click="cerrarPanel">
+        <span class="marca__inicial" aria-hidden="true">L</span>
+        <span class="marca__nombre">LuxFer</span>
         <small>Centro de estética</small>
       </a>
 
       <button
-        class="menu-button"
+        class="control-panel"
         type="button"
         aria-label="Abrir o cerrar el menú"
-        aria-controls="main-menu"
-        :aria-expanded="menuOpen"
-        @click="menuOpen = !menuOpen"
+        aria-controls="panel-principal"
+        :aria-expanded="panelAbierto"
+        @click="panelAbierto = !panelAbierto"
       >
         <span></span>
         <span></span>
       </button>
 
-      <nav id="main-menu" class="main-menu" :class="{ 'main-menu--open': menuOpen }">
-        <a href="#inicio" @click="closeMenu">Inicio</a>
-        <a href="#servicios" @click="closeMenu">Servicios</a>
-        <a href="#productos" @click="closeMenu">Productos</a>
-        <a href="#contacto" @click="closeMenu">Contacto</a>
-        <a class="button button--primary button--small" href="#citas" @click="closeMenu">
+      <nav
+        id="panel-principal"
+        class="panel-principal"
+        :class="{ 'panel-principal--abierto': panelAbierto }"
+      >
+        <a href="#inicio" @click="cerrarPanel">Inicio</a>
+        <a href="#servicios" @click="cerrarPanel">Servicios</a>
+        <a href="#productos" @click="cerrarPanel">Productos</a>
+        <a href="#contacto" @click="cerrarPanel">Contacto</a>
+        <a class="control control--principal control--compacto" href="#citas" @click="cerrarPanel">
           Agendar cita
         </a>
       </nav>
     </header>
 
     <main>
-      <section id="inicio" class="hero" aria-labelledby="hero-title">
-        <div class="hero__content">
-          <p class="section-label"><span></span>Cuidado que se siente bien</p>
-          <h1 id="hero-title">Un momento bonito para cuidar de ti.</h1>
-          <p class="hero__lead">
+      <!-- Portada del sitio -->
+      <section id="inicio" class="portada" aria-labelledby="nombre-portada">
+        <div class="portada__contenido">
+          <p class="etiqueta-bloque"><span></span>Cuidado que se siente bien</p>
+          <h1 id="nombre-portada">Un momento bonito para cuidar de ti.</h1>
+          <p class="portada__detalle">
             En LuxFer queremos que te sientas cómoda, escuchada y especial. Ven a disfrutar una
             pausa sencilla, tranquila y pensada para ti.
           </p>
 
-          <div class="hero__actions">
-            <a class="button button--primary" href="#citas">
+          <div class="portada__acciones">
+            <a class="control control--principal" href="#citas">
               Quiero agendar
               <span aria-hidden="true">↗</span>
             </a>
-            <a class="inline-link" href="#servicios">
+            <a class="enlace-simple" href="#servicios">
               Ver servicios
               <span aria-hidden="true">↓</span>
             </a>
           </div>
 
-          <div class="hero__details" aria-label="Información destacada">
+          <div class="portada__detalles" aria-label="Información destacada">
             <div>
               <strong>Te escuchamos</strong>
               <span>El cuidado se adapta a lo que necesitas.</span>
@@ -101,72 +110,76 @@ const closeMenu = () => {
           </div>
         </div>
 
-        <div class="hero__media">
+        <div class="portada__imagen">
           <img
-            :src="heroImage"
+            :src="imagenPortada"
             alt="Cliente recibiendo un tratamiento facial relajante en LuxFer"
           />
-          <div class="hero__badge">
+          <div class="portada__distintivo">
             <span aria-hidden="true">✦</span>
             <p><strong>Tu momento</strong><small>de cuidado y calma</small></p>
           </div>
-          <p class="hero__vertical-text" aria-hidden="true">CUIDADO · CALMA · BELLEZA</p>
+          <p class="portada__texto-vertical" aria-hidden="true">CUIDADO · CALMA · BELLEZA</p>
         </div>
       </section>
 
-      <section class="value-bar" aria-label="Valores de LuxFer">
+      <section class="barra-valores" aria-label="Valores de LuxFer">
         <p><span>01</span>Atención cercana</p>
         <p><span>02</span>Cuidado a tu ritmo</p>
         <p><span>03</span>Reserva sin complicaciones</p>
       </section>
 
-      <section id="servicios" class="section services" aria-labelledby="services-title">
-        <div class="section-heading">
+      <!-- Resumen visual de servicios -->
+      <section id="servicios" class="bloque" aria-labelledby="nombre-servicios">
+        <div class="cabecera-bloque">
           <div>
-            <p class="section-label"><span></span>Servicios para ti</p>
-            <h2 id="services-title">Elige lo que te haga sentir bien.</h2>
+            <p class="etiqueta-bloque"><span></span>Servicios para ti</p>
+            <h2 id="nombre-servicios">Elige lo que te haga sentir bien.</h2>
           </div>
-          <div class="section-heading__aside">
+          <div class="cabecera-bloque__texto">
             <p>
               Conoce nuestras opciones con calma y encuentra ese cuidado que estabas buscando.
             </p>
-            <a class="inline-link" href="#citas">Ver todos los servicios <span>→</span></a>
+            <a class="enlace-simple" href="#citas">Ver todos los servicios <span>→</span></a>
           </div>
         </div>
 
-        <div class="service-grid">
+        <div class="lista-servicios">
           <article
-            v-for="service in services"
-            :key="service.id"
-            class="service-card"
-            :class="`service-card--${service.accent}`"
+            v-for="servicio in servicios"
+            :key="servicio.id"
+            class="tarjeta-servicio"
+            :class="`tarjeta-servicio--${servicio.tono}`"
           >
-            <div class="service-card__number">{{ service.id }}</div>
-            <div class="service-card__art" aria-hidden="true">
-              <span class="service-card__orb"></span>
-              <span class="service-card__vessel"></span>
-              <span class="service-card__line"></span>
+            <div class="tarjeta-servicio__numero">{{ servicio.id }}</div>
+            <div class="tarjeta-servicio__adorno" aria-hidden="true">
+              <span class="tarjeta-servicio__aro"></span>
+              <span class="tarjeta-servicio__envase"></span>
+              <span class="tarjeta-servicio__trazo"></span>
             </div>
-            <div class="service-card__content">
-              <h3>{{ service.name }}</h3>
-              <p>{{ service.description }}</p>
-              <a href="#citas" :aria-label="`Conocer ${service.name}`">Conocer más <span>↗</span></a>
+            <div class="tarjeta-servicio__contenido">
+              <h3>{{ servicio.nombre }}</h3>
+              <p>{{ servicio.detalle }}</p>
+              <a href="#citas" :aria-label="`Conocer ${servicio.nombre}`">
+                Conocer más <span>↗</span>
+              </a>
             </div>
           </article>
         </div>
       </section>
 
-      <section id="experiencia" class="experience" aria-labelledby="experience-title">
-        <div class="experience__intro">
-          <p class="section-label section-label--light"><span></span>Así de sencillo</p>
-          <h2 id="experience-title">Reservar será muy fácil.</h2>
+      <!-- Pasos para solicitar una cita -->
+      <section id="experiencia" class="proceso-reserva" aria-labelledby="nombre-proceso">
+        <div class="proceso-reserva__intro">
+          <p class="etiqueta-bloque etiqueta-bloque--clara"><span></span>Así de sencillo</p>
+          <h2 id="nombre-proceso">Reservar será muy fácil.</h2>
           <p>
             Solo tendrás que elegir lo que deseas, buscar un horario y esperar nuestra
             confirmación.
           </p>
         </div>
 
-        <ol class="steps-list">
+        <ol class="lista-pasos">
           <li>
             <span>01</span>
             <div>
@@ -191,39 +204,41 @@ const closeMenu = () => {
         </ol>
       </section>
 
-      <section id="productos" class="products" aria-labelledby="products-title">
-        <div class="products__showcase" aria-hidden="true">
-          <span class="products__sun"></span>
-          <span class="products__jar"></span>
-          <span class="products__dropper"></span>
-          <span class="products__branch"></span>
+      <!-- Muestra de productos -->
+      <section id="productos" class="productos" aria-labelledby="nombre-productos">
+        <div class="productos__muestra" aria-hidden="true">
+          <span class="productos__fondo-circular"></span>
+          <span class="productos__tarro"></span>
+          <span class="productos__gotero"></span>
+          <span class="productos__rama"></span>
         </div>
 
-        <div class="products__content">
-          <p class="section-label"><span></span>Para cuidarte en casa</p>
-          <h2 id="products-title">Productos sencillos para acompañar tu rutina.</h2>
+        <div class="productos__contenido">
+          <p class="etiqueta-bloque"><span></span>Para cuidarte en casa</p>
+          <h2 id="nombre-productos">Productos sencillos para acompañar tu rutina.</h2>
           <p>
             Encontrarás productos de skincare y podrás preguntarnos por WhatsApp cuál puede
             acompañar mejor tu cuidado diario.
           </p>
-          <a class="button button--outline" href="#contacto">
+          <a class="control control--borde" href="#contacto">
             Conocer productos
             <span aria-hidden="true">→</span>
           </a>
         </div>
       </section>
 
-      <section id="citas" class="booking" aria-labelledby="booking-title">
-        <div class="booking__copy">
-          <p class="section-label section-label--light"><span></span>Cuando tú quieras</p>
-          <h2 id="booking-title">¿Te gustaría visitarnos?</h2>
+      <!-- Llamado final para agendar -->
+      <section id="citas" class="llamado-citas" aria-labelledby="nombre-citas">
+        <div>
+          <p class="etiqueta-bloque etiqueta-bloque--clara"><span></span>Cuando tú quieras</p>
+          <h2 id="nombre-citas">¿Te gustaría visitarnos?</h2>
         </div>
-        <div class="booking__action">
+        <div class="llamado-citas__accion">
           <p>
             Muy pronto podrás escoger desde aquí tu servicio, fecha y horario de una forma rápida
             y clara.
           </p>
-          <a class="button button--light" href="#contacto">
+          <a class="control control--claro" href="#contacto">
             Quiero saber más
             <span aria-hidden="true">↗</span>
           </a>
@@ -231,11 +246,11 @@ const closeMenu = () => {
       </section>
     </main>
 
-    <footer id="contacto" class="footer">
-      <div class="footer__top">
-        <a class="brand brand--footer" href="#inicio" aria-label="LuxFer, volver al inicio">
-          <span class="brand__symbol" aria-hidden="true">L</span>
-          <span class="brand__name">LuxFer</span>
+    <footer id="contacto" class="pie-sitio">
+      <div class="pie-sitio__principal">
+        <a class="marca" href="#inicio" aria-label="LuxFer, volver al inicio">
+          <span class="marca__inicial" aria-hidden="true">L</span>
+          <span class="marca__nombre">LuxFer</span>
           <small>Centro de estética</small>
         </a>
         <p>Un espacio sencillo y agradable para regalarte el cuidado que mereces.</p>
@@ -246,8 +261,8 @@ const closeMenu = () => {
           <a href="#citas">Citas</a>
         </nav>
       </div>
-      <div class="footer__bottom">
-        <span>© {{ currentYear }} LuxFer</span>
+      <div class="pie-sitio__inferior">
+        <span>© {{ periodoActual }} LuxFer</span>
         <span>Datos de contacto por confirmar</span>
       </div>
     </footer>
