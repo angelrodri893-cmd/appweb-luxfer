@@ -1,63 +1,19 @@
-<script setup>
-import { reactive, ref } from 'vue'
-import { useRoute } from 'vue-router'
-
-const rutaActual = useRoute()
-const enviado = ref(false)
-const productoConsultado = typeof rutaActual.query.producto === 'string' ? rutaActual.query.producto : ''
-const mensaje = reactive({
-  nombre: '',
-  telefono: '',
-  asunto: productoConsultado ? `Consulta sobre ${productoConsultado}` : '',
-  contenido: productoConsultado ? `Hola, quisiera conocer más sobre ${productoConsultado}.` : '',
-})
-
-const enviarMensaje = () => {
-  enviado.value = true
-}
-</script>
-
 <template>
   <section class="cabecera-pagina">
     <p class="etiqueta-bloque"><span></span>Estamos para ayudarte</p>
     <h1>Conversemos sobre lo que necesitas.</h1>
-    <p>Los datos comerciales reales y el enlace de WhatsApp se agregarán cuando sean confirmados.</p>
+    <p>Escríbenos por correo o visita el sitio oficial de WhatsApp mientras habilitamos el número comercial.</p>
   </section>
-
-  <section class="contacto-pagina">
+  <section class="contacto-pagina contacto-pagina--definitivo">
     <div class="contacto-pagina__datos">
-      <article><small>WhatsApp</small><strong>Número por confirmar</strong><p>Próximamente disponible.</p></article>
-      <article><small>Ubicación</small><strong>Dirección por confirmar</strong><p>Se añadirá el mapa del centro.</p></article>
-      <article><small>Horario</small><strong>Atención con cita</strong><p>Horario comercial por definir.</p></article>
+      <article><small>Correo</small><strong>info.luxferr@gmail.com</strong><a href="mailto:info.luxferr@gmail.com">Enviar un correo</a></article>
+      <article><small>Horario</small><strong>Lunes a sábado</strong><p>De 08:00 a 18:00, con cita previa.</p></article>
+      <article><small>WhatsApp</small><strong>Número por confirmar</strong><p>El acceso se actualizará cuando el centro confirme su número.</p></article>
     </div>
-
-    <div class="tarjeta-formulario">
-      <div v-if="enviado" class="mensaje-exito" role="status">
-        <span aria-hidden="true">✓</span><h2>Mensaje preparado</h2>
-        <p>El formulario funciona correctamente. El envío real se conectará más adelante.</p>
-        <button class="control control--borde" type="button" @click="enviado = false">Volver</button>
-      </div>
-      <form v-else @submit.prevent="enviarMensaje">
-        <div class="campo-formulario">
-          <label for="contacto-nombre">Nombre</label>
-          <input id="contacto-nombre" v-model.trim="mensaje.nombre" type="text" required />
-        </div>
-        <div class="campo-formulario">
-          <label for="contacto-telefono">Teléfono</label>
-          <input id="contacto-telefono" v-model.trim="mensaje.telefono" type="tel" required />
-        </div>
-        <div class="campo-formulario campo-formulario--completo">
-          <label for="contacto-asunto">Asunto</label>
-          <input id="contacto-asunto" v-model.trim="mensaje.asunto" type="text" required />
-        </div>
-        <div class="campo-formulario campo-formulario--completo">
-          <label for="contacto-mensaje">Mensaje</label>
-          <textarea id="contacto-mensaje" v-model.trim="mensaje.contenido" rows="5" required></textarea>
-        </div>
-        <button class="control control--principal campo-formulario--completo" type="submit">
-          Preparar mensaje
-        </button>
-      </form>
-    </div>
+    <article class="tarjeta-contacto-principal">
+      <span aria-hidden="true">✦</span><h2>¿Deseas solicitar una cita?</h2>
+      <p>Crea tu cuenta para consultar servicios, horas libres y guardar tu solicitud.</p>
+      <div class="grupo-acciones"><RouterLink class="control control--principal" to="/agendar">Agendar cita</RouterLink><a class="control control--borde" href="https://www.whatsapp.com/" target="_blank" rel="noopener noreferrer">Ir a WhatsApp</a></div>
+    </article>
   </section>
 </template>
