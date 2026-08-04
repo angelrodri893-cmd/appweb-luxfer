@@ -385,6 +385,27 @@
   grid-column: 1 / -1;
 }
 
+.mensaje-formulario {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 13px 15px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.mensaje-formulario--error {
+  color: #7a293d;
+  background: #fce8ed;
+  border: 1px solid rgba(169, 84, 105, 0.2);
+}
+
+button:disabled,
+select:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
 .tarjeta-formulario form > h2 {
   margin-top: 0;
 }
@@ -588,6 +609,66 @@
   font-size: 25px;
 }
 
+.cuenta-salir {
+  margin-top: 28px;
+}
+
+.lista-citas {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.cita-cuenta {
+  display: flex;
+  min-height: 135px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 27px;
+  background: var(--blanco);
+  border: 1px solid var(--borde-suave);
+  border-radius: 18px;
+}
+
+.cita-cuenta h2 {
+  margin: 10px 0 4px;
+  color: var(--ciruela-900);
+  font-family: var(--fuente-encabezados);
+  font-size: 27px;
+  font-weight: 400;
+}
+
+.cita-cuenta p {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 14px;
+}
+
+.estado-cita {
+  display: inline-flex;
+  padding: 5px 9px;
+  color: var(--ciruela-700);
+  background: var(--rosa-100);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.estado-cita--confirmada,
+.estado-cita--completada {
+  color: #4d5944;
+  background: #e8ebdf;
+}
+
+.estado-cita--cancelada,
+.estado-cita--rechazada {
+  color: #6e6265;
+  background: #eee9e9;
+}
+
 @media (max-width: 1000px) {
   .rejilla-catalogo,
   .rejilla-productos {
@@ -634,6 +715,16 @@
   .pagina-autenticacion h1,
   .estado-vacio h1 {
     font-size: clamp(42px, 12vw, 56px);
+  }
+
+  .cita-cuenta {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 22px;
+  }
+
+  .cita-cuenta .control {
+    width: 100%;
   }
 
   .detalle-servicio__visual {

@@ -1,9 +1,11 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useSesion } from '../composables/useSesion'
 
 const panelAbierto = ref(false)
 const rutaActual = useRoute()
+const sesion = useSesion()
 
 const cerrarPanel = () => {
   panelAbierto.value = false
@@ -48,7 +50,7 @@ watch(() => rutaActual.fullPath, cerrarPanel)
       <RouterLink to="/servicios">Servicios</RouterLink>
       <RouterLink to="/productos">Productos</RouterLink>
       <RouterLink to="/contacto">Contacto</RouterLink>
-      <RouterLink to="/acceso">Mi cuenta</RouterLink>
+      <RouterLink :to="sesion.usuario ? '/mi-cuenta' : '/acceso'">Mi cuenta</RouterLink>
       <RouterLink class="control control--principal control--compacto" to="/agendar">
         Agendar cita
       </RouterLink>

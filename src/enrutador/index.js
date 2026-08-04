@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useSesion } from '../composables/useSesion'
 
 const rutas = [
   {
@@ -29,7 +30,7 @@ const rutas = [
     path: '/agendar',
     name: 'agendar',
     component: () => import('../vistas/AgendarVista.vue'),
-    meta: { titulo: 'Agendar cita' },
+    meta: { titulo: 'Agendar cita', requiereAutenticacion: true },
   },
   {
     path: '/contacto',
@@ -53,7 +54,7 @@ const rutas = [
     path: '/mi-cuenta',
     name: 'mi-cuenta',
     component: () => import('../vistas/MiCuentaVista.vue'),
-    meta: { titulo: 'Mi cuenta' },
+    meta: { titulo: 'Mi cuenta', requiereAutenticacion: true },
   },
   {
     path: '/:rutaNoEncontrada(.*)*',
@@ -70,6 +71,18 @@ const enrutador = createRouter({
   scrollBehavior() {
     return { top: 0, behavior: 'smooth' }
   },
+})
+
+enrutador.beforeEach((ruta) => {
+  const sesion = useSesion()
+
+  if (ruta.meta.requiereAutenticacion && !sesion.usuario) {
+    return { name: 'acceso', query: { redireccion: ruta.fullPath } }
+  }
+
+  if ((ruta.name === 'acceso' || ruta.name === 'registro') && sesion.usuario) {
+    return { name: 'mi-cuenta' }
+  }
 })
 
 enrutador.afterEach((ruta) => {
