@@ -10,6 +10,8 @@ const enrutador = useRouter()
 const cuenta = reactive({ nombre: '', telefono: '', correo: '', clave: '', confirmarClave: '' })
 const registroCompletado = ref(false)
 const enviando = ref(false)
+const claveVisible = ref(false)
+const confirmacionVisible = ref(false)
 const errores = reactive({ nombre: '', telefono: '', clave: '', general: '' })
 
 const validarFormulario = () => {
@@ -92,11 +94,21 @@ const crearCuenta = async () => {
         </div>
         <div class="campo-formulario">
           <label for="registro-clave">Contraseña</label>
-          <input id="registro-clave" v-model="cuenta.clave" type="password" minlength="8" required autocomplete="new-password" />
+          <div class="entrada-clave">
+            <input id="registro-clave" v-model="cuenta.clave" :type="claveVisible ? 'text' : 'password'" minlength="8" required autocomplete="new-password" />
+            <button type="button" :aria-label="claveVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'" :aria-pressed="claveVisible" @click="claveVisible = !claveVisible">
+              {{ claveVisible ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
         </div>
         <div class="campo-formulario">
           <label for="registro-confirmar">Confirmar contraseña</label>
-          <input id="registro-confirmar" v-model="cuenta.confirmarClave" type="password" minlength="8" required autocomplete="new-password" />
+          <div class="entrada-clave">
+            <input id="registro-confirmar" v-model="cuenta.confirmarClave" :type="confirmacionVisible ? 'text' : 'password'" minlength="8" required autocomplete="new-password" />
+            <button type="button" :aria-label="confirmacionVisible ? 'Ocultar confirmación' : 'Mostrar confirmación'" :aria-pressed="confirmacionVisible" @click="confirmacionVisible = !confirmacionVisible">
+              {{ confirmacionVisible ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
           <small v-if="errores.clave" class="error-campo">{{ errores.clave }}</small>
         </div>
         <button class="control control--principal campo-formulario--completo" type="submit" :disabled="enviando">

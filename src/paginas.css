@@ -456,6 +456,37 @@ select:disabled {
   outline: 3px solid rgba(216, 143, 160, 0.2);
 }
 
+.entrada-clave {
+  position: relative;
+}
+
+.campo-formulario .entrada-clave input {
+  padding-right: 86px;
+}
+
+.entrada-clave button {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  padding: 7px 9px;
+  color: var(--ciruela-900);
+  background: var(--rosa-100);
+  border: 0;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.entrada-clave button:hover,
+.entrada-clave button:focus-visible {
+  color: var(--blanco);
+  background: var(--rosa-500);
+  outline: none;
+}
+
 .mensaje-exito {
   display: flex;
   align-items: flex-start;

@@ -11,6 +11,7 @@ const sesion = useSesion()
 const credenciales = reactive({ correo: '', clave: '' })
 const enviando = ref(false)
 const errorFormulario = ref('')
+const claveVisible = ref(false)
 
 const iniciarSesion = async () => {
   enviando.value = true
@@ -60,7 +61,12 @@ const iniciarSesion = async () => {
         </div>
         <div class="campo-formulario campo-formulario--completo">
           <label for="clave">Contraseña</label>
-          <input id="clave" v-model="credenciales.clave" type="password" minlength="8" required autocomplete="current-password" />
+          <div class="entrada-clave">
+            <input id="clave" v-model="credenciales.clave" :type="claveVisible ? 'text' : 'password'" minlength="8" required autocomplete="current-password" />
+            <button type="button" :aria-label="claveVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'" :aria-pressed="claveVisible" @click="claveVisible = !claveVisible">
+              {{ claveVisible ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
         </div>
         <button class="control control--principal campo-formulario--completo" type="submit" :disabled="enviando">
           {{ enviando ? 'Ingresando…' : 'Ingresar' }}
