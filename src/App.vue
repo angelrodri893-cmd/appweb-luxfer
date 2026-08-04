@@ -1,5 +1,6 @@
 <script setup>
 import EncabezadoSitio from './componentes/EncabezadoSitio.vue'
+import NotificacionGlobal from './componentes/NotificacionGlobal.vue'
 import PieSitio from './componentes/PieSitio.vue'
 </script>
 
@@ -10,5 +11,6 @@ import PieSitio from './componentes/PieSitio.vue'
       <RouterView />
     </main>
     <PieSitio />
+    <NotificacionGlobal />
   </div>
 </template>

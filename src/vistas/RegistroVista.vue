@@ -1,40 +1,56 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { refrescarSesion } from '../composables/useSesion'
+import { mostrarNotificacion } from '../composables/useNotificacion'
 import { supabase } from '../servicios/supabase'
+import { claveValida, limpiarTelefono, telefonoValido } from '../utilidades/validaciones'
 
 const enrutador = useRouter()
-const cuenta = reactive({ nombre: '', telefono: '', correo: '', clave: '' })
+const cuenta = reactive({ nombre: '', telefono: '', correo: '', clave: '', confirmarClave: '' })
 const registroCompletado = ref(false)
 const enviando = ref(false)
-const errorFormulario = ref('')
+const errores = reactive({ nombre: '', telefono: '', clave: '', general: '' })
+
+const validarFormulario = () => {
+  errores.nombre = cuenta.nombre.trim().length >= 3 ? '' : 'Escribe un nombre de al menos 3 caracteres.'
+  errores.telefono = telefonoValido(cuenta.telefono) ? '' : 'Ingresa entre 9 y 10 dígitos.'
+  errores.clave = !claveValida(cuenta.clave)
+    ? 'Usa al menos 8 caracteres, una letra y un número.'
+    : cuenta.clave !== cuenta.confirmarClave ? 'Las contraseñas no coinciden.' : ''
+  return !errores.nombre && !errores.telefono && !errores.clave
+}
 
 const crearCuenta = async () => {
-  enviando.value = true
-  errorFormulario.value = ''
+  errores.general = ''
+  if (!validarFormulario()) return
 
+  enviando.value = true
   const { data, error } = await supabase.auth.signUp({
-    email: cuenta.correo,
+    email: cuenta.correo.trim().toLowerCase(),
     password: cuenta.clave,
     options: {
-      data: {
-        nombre_completo: cuenta.nombre,
-        telefono: cuenta.telefono,
-      },
+      data: { nombre_completo: cuenta.nombre.trim(), telefono: cuenta.telefono },
       emailRedirectTo: `${window.location.origin}/acceso`,
     },
   })
-
   enviando.value = false
+
   if (error) {
-    errorFormulario.value =
-      error.message.includes('already registered')
-        ? 'Este correo ya tiene una cuenta. Intenta iniciar sesión.'
-        : 'No pudimos crear la cuenta. Revisa los datos e inténtalo nuevamente.'
+    errores.general = error.message.includes('already registered')
+      ? 'Este correo ya tiene una cuenta. Intenta iniciar sesión.'
+      : 'No pudimos crear la cuenta. Revisa los datos e inténtalo nuevamente.'
     return
   }
 
+  mostrarNotificacion({
+    titulo: 'Cuenta registrada',
+    mensaje: data.session ? 'Tu cuenta ya está disponible.' : 'Revisa tu correo para confirmar la cuenta.',
+    duracion: 5000,
+  })
+
   if (data.session) {
+    await refrescarSesion()
     await enrutador.replace('/mi-cuenta')
     return
   }
@@ -48,23 +64,41 @@ const crearCuenta = async () => {
     <div class="pagina-autenticacion__mensaje">
       <p class="etiqueta-bloque"><span></span>Primera visita</p>
       <h1>Crea tu espacio personal.</h1>
-      <p>Tu cuenta te permitirá consultar citas, estados e historial de servicios.</p>
+      <p>Tu cuenta te permitirá agendar y consultar tus citas e historial de servicios.</p>
     </div>
     <div class="tarjeta-formulario tarjeta-formulario--acceso">
       <div v-if="registroCompletado" class="mensaje-exito" role="status">
         <span aria-hidden="true">✓</span><h2>Revisa tu correo</h2>
-        <p>Enviamos un enlace de confirmación a {{ cuenta.correo }}. Confirma la cuenta antes de ingresar.</p>
+        <p>Enviamos un enlace de confirmación a {{ cuenta.correo }}.</p>
         <RouterLink class="control control--borde" to="/acceso">Ir al acceso</RouterLink>
       </div>
       <form v-else @submit.prevent="crearCuenta">
         <h2>Crear cuenta</h2>
-        <p v-if="errorFormulario" class="mensaje-formulario mensaje-formulario--error" role="alert">
-          {{ errorFormulario }}
-        </p>
-        <div class="campo-formulario campo-formulario--completo"><label for="registro-nombre">Nombre completo</label><input id="registro-nombre" v-model.trim="cuenta.nombre" type="text" required /></div>
-        <div class="campo-formulario campo-formulario--completo"><label for="registro-telefono">Teléfono</label><input id="registro-telefono" v-model.trim="cuenta.telefono" type="tel" required /></div>
-        <div class="campo-formulario campo-formulario--completo"><label for="registro-correo">Correo electrónico</label><input id="registro-correo" v-model.trim="cuenta.correo" type="email" required /></div>
-        <div class="campo-formulario campo-formulario--completo"><label for="registro-clave">Contraseña</label><input id="registro-clave" v-model="cuenta.clave" type="password" minlength="6" required /></div>
+        <p v-if="errores.general" class="mensaje-formulario mensaje-formulario--error" role="alert">{{ errores.general }}</p>
+
+        <div class="campo-formulario campo-formulario--completo">
+          <label for="registro-nombre">Nombre completo</label>
+          <input id="registro-nombre" v-model.trim="cuenta.nombre" type="text" minlength="3" maxlength="80" required autocomplete="name" />
+          <small v-if="errores.nombre" class="error-campo">{{ errores.nombre }}</small>
+        </div>
+        <div class="campo-formulario campo-formulario--completo">
+          <label for="registro-telefono">Teléfono</label>
+          <input id="registro-telefono" :value="cuenta.telefono" type="tel" inputmode="numeric" minlength="9" maxlength="10" pattern="[0-9]{9,10}" required autocomplete="tel" @input="cuenta.telefono = limpiarTelefono($event.target.value)" />
+          <small v-if="errores.telefono" class="error-campo">{{ errores.telefono }}</small>
+        </div>
+        <div class="campo-formulario campo-formulario--completo">
+          <label for="registro-correo">Correo electrónico</label>
+          <input id="registro-correo" v-model.trim="cuenta.correo" type="email" required autocomplete="email" />
+        </div>
+        <div class="campo-formulario">
+          <label for="registro-clave">Contraseña</label>
+          <input id="registro-clave" v-model="cuenta.clave" type="password" minlength="8" required autocomplete="new-password" />
+        </div>
+        <div class="campo-formulario">
+          <label for="registro-confirmar">Confirmar contraseña</label>
+          <input id="registro-confirmar" v-model="cuenta.confirmarClave" type="password" minlength="8" required autocomplete="new-password" />
+          <small v-if="errores.clave" class="error-campo">{{ errores.clave }}</small>
+        </div>
         <button class="control control--principal campo-formulario--completo" type="submit" :disabled="enviando">
           {{ enviando ? 'Creando cuenta…' : 'Crear cuenta' }}
         </button>
