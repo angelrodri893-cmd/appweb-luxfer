@@ -312,7 +312,7 @@
   width: 100%;
 }
 
-.nota-provisional {
+.nota-informativa {
   margin: 30px 0 0;
   padding: 18px 22px;
   color: var(--texto-suave);
@@ -454,6 +454,37 @@ select:disabled {
 .campo-formulario textarea:focus {
   border-color: var(--rosa-500);
   outline: 3px solid rgba(216, 143, 160, 0.2);
+}
+
+.entrada-clave {
+  position: relative;
+}
+
+.campo-formulario .entrada-clave input {
+  padding-right: 86px;
+}
+
+.entrada-clave button {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  padding: 7px 9px;
+  color: var(--ciruela-900);
+  background: var(--rosa-100);
+  border: 0;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.entrada-clave button:hover,
+.entrada-clave button:focus-visible {
+  color: var(--blanco);
+  background: var(--rosa-500);
+  outline: none;
 }
 
 .mensaje-exito {
@@ -762,5 +793,585 @@ select:disabled {
 
   .tarjeta-producto__visual {
     min-height: 260px;
+  }
+}
+
+/* Estados compartidos por los formularios definitivos. */
+.error-campo {
+  display: block;
+  margin-top: 5px;
+  color: #a13f55;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.aviso-catalogo {
+  width: min(1180px, calc(100% - 40px));
+  margin: 28px auto 0;
+}
+
+.bloque--productos {
+  padding-top: 90px;
+  background: var(--rosa-50);
+}
+
+.rejilla-productos--inicio {
+  margin-top: 40px;
+}
+
+.tarjeta-servicio__imagen,
+.tarjeta-catalogo__figura img,
+.tarjeta-producto__visual img,
+.detalle-servicio__visual > img,
+.rejilla-admin-catalogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tarjeta-servicio__imagen {
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+}
+
+.tarjeta-servicio__contenido,
+.tarjeta-servicio__numero {
+  position: relative;
+  z-index: 1;
+}
+
+.tarjeta-catalogo__figura {
+  overflow: hidden;
+}
+
+.tarjeta-producto__visual {
+  overflow: hidden;
+}
+
+.tarjeta-producto__contenido h3 {
+  margin: 4px 0 8px;
+  font: 500 31px/1.1 var(--fuente-encabezados);
+}
+
+.detalle-servicio__visual > img {
+  position: absolute;
+  inset: 0;
+}
+
+.detalle-servicio__visual small {
+  z-index: 2;
+}
+
+.contacto-pagina--definitivo {
+  align-items: stretch;
+}
+
+.contacto-pagina__datos article a {
+  color: var(--rosa-600);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tarjeta-contacto-principal {
+  display: flex;
+  min-height: 420px;
+  padding: clamp(36px, 7vw, 80px);
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 28px;
+  background: linear-gradient(145deg, var(--rosa-100), var(--crema-100));
+}
+
+.tarjeta-contacto-principal > span {
+  color: var(--rosa-500);
+  font-size: 42px;
+}
+
+.tarjeta-contacto-principal h2 {
+  max-width: 500px;
+  margin: 12px 0;
+  font: 500 clamp(40px, 5vw, 64px)/1 var(--fuente-encabezados);
+}
+
+.acciones-cita,
+.acciones-administracion {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nota-administradora {
+  max-width: 700px;
+  margin-top: 14px;
+  padding: 12px 15px;
+  border-left: 3px solid var(--rosa-400);
+  background: var(--rosa-50);
+}
+
+/* Confirmacion visual centrada para acciones completadas. */
+.fondo-notificacion,
+.fondo-modal {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  padding: 20px;
+  place-items: center;
+  background: rgba(44, 27, 34, 0.52);
+  backdrop-filter: blur(6px);
+}
+
+.tarjeta-notificacion {
+  width: min(440px, 100%);
+  padding: 45px 38px 36px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 26px;
+  background: var(--blanco);
+  box-shadow: 0 24px 70px rgba(44, 27, 34, 0.25);
+}
+
+.tarjeta-notificacion__visto {
+  display: grid;
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 18px;
+  color: #fff;
+  background: #67a36e;
+  border-radius: 50%;
+  font-size: 36px;
+  place-items: center;
+}
+
+.tarjeta-notificacion h2 {
+  margin: 0;
+  font: 500 38px/1.1 var(--fuente-encabezados);
+}
+
+.tarjeta-notificacion p {
+  color: var(--texto-suave);
+}
+
+.aparicion-notificacion-enter-active,
+.aparicion-notificacion-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.aparicion-notificacion-enter-from,
+.aparicion-notificacion-leave-to {
+  opacity: 0;
+}
+
+.tarjeta-modal {
+  position: relative;
+  width: min(600px, 100%);
+  max-height: calc(100vh - 40px);
+  padding: clamp(28px, 5vw, 48px);
+  overflow-y: auto;
+  border-radius: 26px;
+  background: var(--blanco);
+  box-shadow: 0 24px 70px rgba(44, 27, 34, 0.28);
+}
+
+.tarjeta-modal--catalogo {
+  width: min(820px, 100%);
+}
+
+.tarjeta-modal h2 {
+  margin: 4px 0 15px;
+  font: 500 clamp(34px, 5vw, 52px)/1 var(--fuente-encabezados);
+}
+
+.cerrar-modal {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--borde-suave);
+  color: var(--ciruela-900);
+  background: var(--crema-50);
+  border-radius: 50%;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+/* Panel administrativo y calendario mensual. */
+.cabecera-administracion {
+  display: flex;
+  padding: clamp(55px, 8vw, 100px) max(20px, calc((100vw - 1180px) / 2));
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  background: linear-gradient(120deg, var(--rosa-50), var(--crema-100));
+}
+
+.cabecera-administracion h1 {
+  max-width: 780px;
+  margin: 10px 0 15px;
+  font: 500 clamp(48px, 7vw, 82px)/0.95 var(--fuente-encabezados);
+}
+
+.panel-administracion {
+  width: min(1280px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 45px 0 100px;
+}
+
+.menu-administracion {
+  display: flex;
+  margin-bottom: 35px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.menu-administracion button {
+  padding: 12px 22px;
+  border: 1px solid var(--borde-suave);
+  color: var(--ciruela-700);
+  background: var(--blanco);
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.menu-administracion button.activo {
+  color: #fff;
+  background: var(--ciruela-900);
+}
+
+.resumen-administracion {
+  display: grid;
+  margin-bottom: 28px;
+  gap: 14px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.resumen-administracion article {
+  padding: 25px;
+  border: 1px solid var(--borde-suave);
+  background: var(--blanco);
+  border-radius: 18px;
+}
+
+.resumen-administracion small,
+.resumen-administracion strong {
+  display: block;
+}
+
+.resumen-administracion small {
+  color: var(--texto-suave);
+}
+
+.resumen-administracion strong {
+  margin-top: 8px;
+  font: 500 46px/1 var(--fuente-encabezados);
+}
+
+.agenda-administracion {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
+}
+
+.calendario-administracion,
+.citas-dia,
+.bloqueos-administracion,
+.rejilla-admin-catalogo article {
+  border: 1px solid var(--borde-suave);
+  background: var(--blanco);
+  border-radius: 22px;
+}
+
+.calendario-administracion {
+  padding: 25px;
+}
+
+.calendario-administracion header {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendario-administracion header h2 {
+  margin: 0;
+  font: 500 34px/1 var(--fuente-encabezados);
+}
+
+.calendario-administracion header button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--borde-suave);
+  background: var(--rosa-50);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.calendario-semana,
+.calendario-dias {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendario-semana span {
+  padding: 8px;
+  color: var(--texto-suave);
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.calendario-dias button {
+  position: relative;
+  min-height: 88px;
+  padding: 9px;
+  border: 1px solid rgba(61, 36, 48, 0.08);
+  color: var(--texto-principal);
+  text-align: left;
+  background: var(--crema-50);
+  cursor: pointer;
+}
+
+.calendario-dias button:disabled {
+  background: transparent;
+  cursor: default;
+}
+
+.calendario-dias button.seleccionado {
+  border-color: var(--rosa-500);
+  background: var(--rosa-100);
+}
+
+.calendario-dias button.con-citas small {
+  display: block;
+  margin-top: 8px;
+  color: var(--ciruela-700);
+  font-size: 10px;
+}
+
+.calendario-dias button i {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: var(--rosa-600);
+  border-radius: 50%;
+}
+
+.citas-dia {
+  max-height: 660px;
+  padding: 25px;
+  overflow-y: auto;
+}
+
+.citas-dia > h2 {
+  margin: 0 0 20px;
+  font: 500 32px/1.1 var(--fuente-encabezados);
+}
+
+.cita-administracion {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.cita-administracion h3 {
+  margin: 8px 0 4px;
+  font: 500 25px/1.1 var(--fuente-encabezados);
+}
+
+.cita-administracion p {
+  margin: 4px 0;
+  color: var(--texto-suave);
+  font-size: 13px;
+}
+
+.cita-administracion label {
+  display: block;
+  margin: 15px 0 5px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cita-administracion textarea {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.bloqueos-administracion {
+  display: grid;
+  margin-top: 24px;
+  padding: 30px;
+  gap: 35px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.bloqueos-administracion h2,
+.cabecera-seccion-admin h2 {
+  margin: 0 0 6px;
+  font: 500 36px/1.1 var(--fuente-encabezados);
+}
+
+.formulario-bloqueo,
+.rejilla-formulario-admin {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.lista-bloqueos article {
+  display: flex;
+  padding: 15px 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.lista-bloqueos p {
+  margin: 3px 0;
+  color: var(--texto-suave);
+  font-size: 12px;
+}
+
+.cabecera-seccion-admin {
+  display: flex;
+  margin-bottom: 25px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cabecera-seccion-admin p {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.rejilla-admin-catalogo {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.rejilla-admin-catalogo article {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  padding: 18px;
+  flex-direction: column;
+}
+
+.rejilla-admin-catalogo img,
+.marcador-imagen {
+  width: 100%;
+  height: 210px;
+  margin-bottom: 16px;
+  border-radius: 15px;
+}
+
+.marcador-imagen {
+  display: grid;
+  color: var(--rosa-500);
+  background: linear-gradient(145deg, var(--rosa-100), var(--crema-100));
+  font-size: 45px;
+  place-items: center;
+}
+
+.rejilla-admin-catalogo h3 {
+  margin: 10px 0 4px;
+  font: 500 29px/1.1 var(--fuente-encabezados);
+}
+
+.rejilla-admin-catalogo p {
+  color: var(--texto-suave);
+  flex-grow: 1;
+}
+
+.rejilla-admin-catalogo strong {
+  margin-bottom: 15px;
+}
+
+.estado-publicacion {
+  align-self: flex-start;
+  padding: 4px 9px;
+  color: #486b4d;
+  background: #e5f2e7;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.estado-publicacion.inactivo {
+  color: #796d70;
+  background: #eee9e9;
+}
+
+.campo-interruptor {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.campo-interruptor input {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 1050px) {
+  .agenda-administracion,
+  .bloqueos-administracion {
+    grid-template-columns: 1fr;
+  }
+
+  .rejilla-admin-catalogo {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .cabecera-administracion,
+  .cabecera-seccion-admin {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .resumen-administracion {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .calendario-administracion {
+    padding: 12px;
+  }
+
+  .calendario-dias button {
+    min-height: 58px;
+    padding: 5px;
+  }
+
+  .calendario-dias button small {
+    display: none !important;
+  }
+
+  .rejilla-admin-catalogo,
+  .formulario-bloqueo,
+  .rejilla-formulario-admin {
+    grid-template-columns: 1fr;
+  }
+
+  .campo-formulario--completo,
+  .campo-interruptor {
+    grid-column: 1;
+  }
+
+  .lista-bloqueos article,
+  .cita-cuenta {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

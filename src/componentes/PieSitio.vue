@@ -10,7 +10,7 @@ const periodoActual = new Date().getFullYear()
         <span class="marca__nombre">LuxFer</span>
         <small>Centro de estética</small>
       </RouterLink>
-      <p>Un espacio sencillo y agradable para regalarte el cuidado que mereces.</p>
+      <p>Un espacio cercano y agradable para regalarte el cuidado que mereces.</p>
       <nav aria-label="Navegación del pie de página">
         <RouterLink to="/servicios">Servicios</RouterLink>
         <RouterLink to="/productos">Productos</RouterLink>
@@ -20,7 +20,7 @@ const periodoActual = new Date().getFullYear()
     </div>
     <div class="pie-sitio__inferior">
       <span>© {{ periodoActual }} LuxFer</span>
-      <span>Datos de contacto por confirmar</span>
+      <a href="mailto:info.luxferr@gmail.com">info.luxferr@gmail.com</a>
     </div>
   </footer>
 </template>

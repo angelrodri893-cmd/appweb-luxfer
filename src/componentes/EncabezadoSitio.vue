@@ -11,7 +11,7 @@ const cerrarPanel = () => {
   panelAbierto.value = false
 }
 
-// Evita que el panel móvil permanezca abierto después de navegar.
+// Evita que el panel movil permanezca abierto despues de navegar.
 watch(() => rutaActual.fullPath, cerrarPanel)
 </script>
 
@@ -36,8 +36,7 @@ watch(() => rutaActual.fullPath, cerrarPanel)
       :aria-expanded="panelAbierto"
       @click="panelAbierto = !panelAbierto"
     >
-      <span></span>
-      <span></span>
+      <span></span><span></span>
     </button>
 
     <nav
@@ -50,6 +49,7 @@ watch(() => rutaActual.fullPath, cerrarPanel)
       <RouterLink to="/servicios">Servicios</RouterLink>
       <RouterLink to="/productos">Productos</RouterLink>
       <RouterLink to="/contacto">Contacto</RouterLink>
+      <RouterLink v-if="sesion.esAdministrador" to="/administracion">Administración</RouterLink>
       <RouterLink :to="sesion.usuario ? '/mi-cuenta' : '/acceso'">Mi cuenta</RouterLink>
       <RouterLink class="control control--principal control--compacto" to="/agendar">
         Agendar cita
