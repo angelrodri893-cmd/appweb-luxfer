@@ -17,7 +17,7 @@ const sesion = useSesion()
       <nav aria-label="Navegación del pie de página">
         <RouterLink to="/servicios">Servicios</RouterLink>
         <RouterLink to="/productos">Productos</RouterLink>
-        <RouterLink to="/contacto">Contacto</RouterLink>
+        <RouterLink v-if="sesion.puedeAgendarCitas" to="/contacto">Contacto</RouterLink>
         <RouterLink v-if="sesion.puedeAgendarCitas" to="/agendar">Citas</RouterLink>
       </nav>
     </div>
