@@ -9,12 +9,18 @@ import {
   obtenerMensajeError,
   telefonoValido,
 } from '../src/utilidades/validaciones.js'
-import { estadoCitaPermiteGestion, rolPuedeAgendarCitas } from '../src/utilidades/permisos.js'
+import { estadoCitaPermiteGestion, rolPuedeAgendarCitas, rolPuedeVerContacto } from '../src/utilidades/permisos.js'
 
 test('reserva citas únicamente desde cuentas no administrativas', () => {
   assert.equal(rolPuedeAgendarCitas('administrador'), false)
   assert.equal(rolPuedeAgendarCitas('cliente'), true)
   assert.equal(rolPuedeAgendarCitas(undefined), true)
+})
+
+test('oculta contacto únicamente en la cuenta administrativa', () => {
+  assert.equal(rolPuedeVerContacto('administrador'), false)
+  assert.equal(rolPuedeVerContacto('cliente'), true)
+  assert.equal(rolPuedeVerContacto(undefined), true)
 })
 
 test('bloquea la gestión de notas cuando una cita alcanza un estado final', () => {

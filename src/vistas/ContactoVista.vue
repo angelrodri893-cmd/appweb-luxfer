@@ -12,7 +12,7 @@ const sesion = useSesion()
   </section>
   <section class="contacto-pagina contacto-pagina--definitivo">
     <div class="contacto-pagina__datos">
-      <article><small>Correo</small><strong>info.luxferr@gmail.com</strong><a href="mailto:info.luxferr@gmail.com">Enviar un correo</a></article>
+      <article><small>Correo</small><strong>info.luxferr@gmail.com</strong></article>
       <article><small>Horario</small><strong>Lunes a sábado</strong><p>De 08:00 a 18:00, con cita previa.</p></article>
       <article><small>WhatsApp</small><strong>Número por confirmar</strong><p>El acceso se actualizará cuando el centro confirme su número.</p></article>
     </div>
