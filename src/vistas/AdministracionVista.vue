@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useSesion } from '../composables/useSesion'
+import { useRouter } from 'vue-router'
+import { cerrarSesion, useSesion } from '../composables/useSesion'
 import { mostrarNotificacion } from '../composables/useNotificacion'
 import {
   crearBloqueo,
@@ -14,8 +15,10 @@ import {
 } from '../servicios/administracion'
 import { eliminarImagenCatalogo, subirImagenCatalogo } from '../servicios/almacenamiento'
 import { listarProductos, listarServicios, obtenerUrlImagen } from '../servicios/catalogos'
+import { estadoCitaPermiteGestion } from '../utilidades/permisos'
 import { formatearDinero, formatearFecha, obtenerMensajeError } from '../utilidades/validaciones'
 
+const enrutador = useRouter()
 const sesion = useSesion()
 const seccionActiva = ref('agenda')
 const citas = ref([])
@@ -27,6 +30,7 @@ const cargando = ref(true)
 const errorPagina = ref('')
 const notasCitas = reactive({})
 const procesandoCita = ref('')
+const cerrandoSesion = ref(false)
 
 const fechaEcuador = (valor) => {
   const partes = new Intl.DateTimeFormat('en-US', {
@@ -82,16 +86,29 @@ const archivoProducto = ref(null)
 const guardandoCatalogo = ref(false)
 const errorCatalogo = ref('')
 
+const asignarCitas = (citasCargadas) => {
+  citas.value = citasCargadas
+  Object.keys(notasCitas).forEach((citaId) => delete notasCitas[citaId])
+  citasCargadas.forEach((cita) => {
+    notasCitas[cita.id] = cita.nota_administradora ?? ''
+  })
+}
+
 const cargarAdministracion = async () => {
   errorPagina.value = ''
   try {
-    ;[citas.value, servicios.value, productos.value, categorias.value, bloqueos.value] = await Promise.all([
+    const [citasCargadas, serviciosCargados, productosCargados, categoriasCargadas, bloqueosCargados] = await Promise.all([
       listarCitasAdministracion(),
       listarServicios({ incluirInactivos: true }),
       listarProductos({ incluirInactivos: true }),
       listarCategorias(),
       listarBloqueos(),
     ])
+    asignarCitas(citasCargadas)
+    servicios.value = serviciosCargados
+    productos.value = productosCargados
+    categorias.value = categoriasCargadas
+    bloqueos.value = bloqueosCargados
   } catch (error) {
     errorPagina.value = obtenerMensajeError(error, 'No pudimos cargar el panel de administración.')
   } finally {
@@ -109,11 +126,23 @@ const cambiarEstado = async (cita, estado) => {
   try {
     await gestionarCita(cita.id, estado, notasCitas[cita.id] || '')
     mostrarNotificacion({ titulo: 'Cita actualizada', mensaje: `La solicitud quedó ${estado}.` })
-    citas.value = await listarCitasAdministracion()
+    asignarCitas(await listarCitasAdministracion())
   } catch (error) {
     errorPagina.value = obtenerMensajeError(error, 'No pudimos actualizar la cita.')
   } finally {
     procesandoCita.value = ''
+  }
+}
+
+const salir = async () => {
+  cerrandoSesion.value = true
+  errorPagina.value = ''
+  try {
+    await cerrarSesion()
+    await enrutador.replace('/')
+  } catch (error) {
+    errorPagina.value = obtenerMensajeError(error, 'No pudimos cerrar la sesión.')
+    cerrandoSesion.value = false
   }
 }
 
@@ -242,7 +271,7 @@ onMounted(cargarAdministracion)
 <template>
   <section class="cabecera-administracion">
     <div><p class="etiqueta-bloque"><span></span>Panel LuxFer</p><h1>Administración del centro.</h1><p>Gestiona solicitudes, disponibilidad y tarjetas del catálogo desde un solo lugar.</p></div>
-    <RouterLink class="control control--borde" to="/mi-cuenta">Ver mi cuenta</RouterLink>
+    <button class="control control--borde" type="button" :disabled="cerrandoSesion" @click="salir">{{ cerrandoSesion ? 'Cerrando…' : 'Cerrar sesión' }}</button>
   </section>
 
   <section class="panel-administracion">
@@ -263,7 +292,7 @@ onMounted(cargarAdministracion)
           <div class="calendario-semana"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
           <div class="calendario-dias"><button v-for="(celda, indice) in celdasCalendario" :key="celda?.fecha || `vacio-${indice}`" type="button" :disabled="!celda" :class="{ seleccionado: celda?.fecha === fechaSeleccionada, 'con-citas': celda?.cantidad }" @click="celda && (fechaSeleccionada = celda.fecha)"><template v-if="celda"><span>{{ celda.dia }}</span><small v-if="celda.cantidad">{{ celda.cantidad }} cita{{ celda.cantidad === 1 ? '' : 's' }}</small><i v-if="celda.pendientes" aria-label="Solicitudes pendientes"></i></template></button></div>
         </div>
-        <div class="citas-dia"><h2>Citas del {{ fechaSeleccionada }}</h2><article v-for="cita in citasSeleccionadas" :key="cita.id" class="cita-administracion"><div><span class="estado-cita" :class="`estado-cita--${cita.estado}`">{{ cita.estado }}</span><h3>{{ cita.servicios?.nombre }}</h3><p>{{ formatearFecha(cita.inicio) }}</p><p>{{ cita.perfiles?.nombre_completo }} · {{ cita.perfiles?.telefono }}</p><p v-if="cita.nota_cliente"><strong>Cliente:</strong> {{ cita.nota_cliente }}</p></div><label :for="`nota-${cita.id}`">Nota para el cliente</label><textarea :id="`nota-${cita.id}`" v-model.trim="notasCitas[cita.id]" rows="2" maxlength="500" :placeholder="cita.nota_administradora || 'Escribe una respuesta breve'"></textarea><div class="acciones-administracion"><button v-if="cita.estado === 'pendiente'" class="control control--principal control--compacto" type="button" :disabled="procesandoCita === cita.id" @click="cambiarEstado(cita, 'confirmada')">Confirmar</button><button v-if="cita.estado === 'pendiente'" class="control control--borde control--compacto" type="button" :disabled="procesandoCita === cita.id" @click="cambiarEstado(cita, 'rechazada')">Rechazar</button><button v-if="cita.estado === 'confirmada'" class="control control--principal control--compacto" type="button" :disabled="procesandoCita === cita.id" @click="cambiarEstado(cita, 'completada')">Completar</button><button v-if="['pendiente', 'confirmada'].includes(cita.estado)" class="control control--borde control--compacto" type="button" :disabled="procesandoCita === cita.id" @click="cambiarEstado(cita, 'cancelada')">Cancelar</button></div></article><div v-if="!citasSeleccionadas.length" class="estado-vacio estado-vacio--interno"><h3>No hay citas para este día.</h3></div></div>
+        <div class="citas-dia"><h2>Citas del {{ fechaSeleccionada }}</h2><article v-for="cita in citasSeleccionadas" :key="cita.id" class="cita-administracion"><div><span class="estado-cita" :class="`estado-cita--${cita.estado}`">{{ cita.estado }}</span><h3>{{ cita.servicios?.nombre }}</h3><p>{{ formatearFecha(cita.inicio) }}</p><p>{{ cita.perfiles?.nombre_completo }} · {{ cita.perfiles?.telefono }}</p><p v-if="cita.nota_cliente"><strong>Cliente:</strong> {{ cita.nota_cliente }}</p></div><label :for="`nota-${cita.id}`">{{ estadoCitaPermiteGestion(cita.estado) ? 'Nota para el cliente' : 'Nota enviada al cliente' }}</label><textarea :id="`nota-${cita.id}`" v-model.trim="notasCitas[cita.id]" rows="2" maxlength="500" placeholder="Escribe una respuesta breve" :disabled="!estadoCitaPermiteGestion(cita.estado) || procesandoCita === cita.id"></textarea><small v-if="!estadoCitaPermiteGestion(cita.estado)" class="nota-cita-bloqueada">Esta cita está cerrada y su nota ya no se puede modificar.</small><div class="acciones-administracion"><button v-if="cita.estado === 'pendiente'" class="control control--principal control--compacto" type="button" :disabled="procesandoCita === cita.id" @click="cambiarEstado(cita, 'confirmada')">Confirmar</button><button v-if="cita.estado === 'pendiente'" class="control control--borde control--compacto" type="button" :disabled="procesandoCita === cita.id" @click="cambiarEstado(cita, 'rechazada')">Rechazar</button><button v-if="cita.estado === 'confirmada'" class="control control--principal control--compacto" type="button" :disabled="procesandoCita === cita.id" @click="cambiarEstado(cita, 'completada')">Completar</button><button v-if="estadoCitaPermiteGestion(cita.estado)" class="control control--borde control--compacto" type="button" :disabled="procesandoCita === cita.id" @click="cambiarEstado(cita, 'cancelada')">Cancelar</button></div></article><div v-if="!citasSeleccionadas.length" class="estado-vacio estado-vacio--interno"><h3>No hay citas para este día.</h3></div></div>
       </div>
 
       <section class="bloqueos-administracion"><div><h2>Bloquear un horario especial</h2><p>Úsalo para descansos, feriados o periodos que no deben ofrecerse.</p><form class="formulario-bloqueo" @submit.prevent="guardarBloqueo"><div class="campo-formulario"><label for="bloqueo-inicio">Inicio</label><input id="bloqueo-inicio" v-model="formularioBloqueo.inicio" type="datetime-local" required /></div><div class="campo-formulario"><label for="bloqueo-fin">Fin</label><input id="bloqueo-fin" v-model="formularioBloqueo.fin" type="datetime-local" required /></div><div class="campo-formulario campo-formulario--completo"><label for="bloqueo-motivo">Motivo</label><input id="bloqueo-motivo" v-model.trim="formularioBloqueo.motivo" type="text" maxlength="120" /></div><button class="control control--principal" type="submit" :disabled="guardandoBloqueo">{{ guardandoBloqueo ? 'Guardando…' : 'Bloquear periodo' }}</button></form></div><div class="lista-bloqueos"><article v-for="bloqueo in bloqueos" :key="bloqueo.id"><div><strong>{{ bloqueo.motivo || 'Horario no disponible' }}</strong><p>{{ formatearFecha(bloqueo.inicio) }} — {{ formatearFecha(bloqueo.fin) }}</p></div><button class="control control--borde control--compacto" type="button" @click="borrarBloqueo(bloqueo.id)">Liberar</button></article><p v-if="!bloqueos.length">No existen periodos bloqueados.</p></div></section>

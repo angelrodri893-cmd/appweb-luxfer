@@ -1,5 +1,8 @@
 <script setup>
+import { useSesion } from '../composables/useSesion'
+
 const periodoActual = new Date().getFullYear()
+const sesion = useSesion()
 </script>
 
 <template>
@@ -15,7 +18,7 @@ const periodoActual = new Date().getFullYear()
         <RouterLink to="/servicios">Servicios</RouterLink>
         <RouterLink to="/productos">Productos</RouterLink>
         <RouterLink to="/contacto">Contacto</RouterLink>
-        <RouterLink to="/agendar">Citas</RouterLink>
+        <RouterLink v-if="sesion.puedeAgendarCitas" to="/agendar">Citas</RouterLink>
       </nav>
     </div>
     <div class="pie-sitio__inferior">

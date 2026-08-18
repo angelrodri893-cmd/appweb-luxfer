@@ -1,9 +1,11 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import imagenPortada from '../assets/inicio-luxfer.jpg'
+import { useSesion } from '../composables/useSesion'
 import { listarProductos, listarServicios, obtenerUrlImagen } from '../servicios/catalogos'
 import { formatearDinero } from '../utilidades/validaciones'
 
+const sesion = useSesion()
 const servicios = ref([])
 const productos = ref([])
 const cargando = ref(true)
@@ -30,7 +32,7 @@ onMounted(async () => {
       <h1 id="nombre-portada">Un momento bonito para cuidar de ti.</h1>
       <p class="portada__detalle">Disfruta una atención cercana, tranquila y pensada para lo que necesitas.</p>
       <div class="portada__acciones">
-        <RouterLink class="control control--principal" to="/agendar">Quiero agendar <span aria-hidden="true">↗</span></RouterLink>
+        <RouterLink v-if="sesion.puedeAgendarCitas" class="control control--principal" to="/agendar">Quiero agendar <span aria-hidden="true">↗</span></RouterLink>
         <RouterLink class="enlace-simple" to="/servicios">Ver servicios <span aria-hidden="true">→</span></RouterLink>
       </div>
       <div class="portada__detalles" aria-label="Información destacada">
@@ -83,6 +85,6 @@ onMounted(async () => {
 
   <section class="llamado-citas" aria-labelledby="nombre-citas">
     <div><p class="etiqueta-bloque etiqueta-bloque--clara"><span></span>Cuando tú quieras</p><h2 id="nombre-citas">¿Te gustaría visitarnos?</h2></div>
-    <div class="llamado-citas__accion"><p>Selecciona un servicio y consulta las horas realmente disponibles.</p><RouterLink class="control control--claro" to="/agendar">Solicitar cita <span aria-hidden="true">↗</span></RouterLink></div>
+    <div class="llamado-citas__accion"><p>Selecciona un servicio y consulta las horas realmente disponibles.</p><RouterLink v-if="sesion.puedeAgendarCitas" class="control control--claro" to="/agendar">Solicitar cita <span aria-hidden="true">↗</span></RouterLink></div>
   </section>
 </template>

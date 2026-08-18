@@ -9,6 +9,21 @@ import {
   obtenerMensajeError,
   telefonoValido,
 } from '../src/utilidades/validaciones.js'
+import { estadoCitaPermiteGestion, rolPuedeAgendarCitas } from '../src/utilidades/permisos.js'
+
+test('reserva citas únicamente desde cuentas no administrativas', () => {
+  assert.equal(rolPuedeAgendarCitas('administrador'), false)
+  assert.equal(rolPuedeAgendarCitas('cliente'), true)
+  assert.equal(rolPuedeAgendarCitas(undefined), true)
+})
+
+test('bloquea la gestión de notas cuando una cita alcanza un estado final', () => {
+  assert.equal(estadoCitaPermiteGestion('pendiente'), true)
+  assert.equal(estadoCitaPermiteGestion('confirmada'), true)
+  assert.equal(estadoCitaPermiteGestion('completada'), false)
+  assert.equal(estadoCitaPermiteGestion('rechazada'), false)
+  assert.equal(estadoCitaPermiteGestion('cancelada'), false)
+})
 
 test('limpia y limita el teléfono a diez dígitos', () => {
   assert.equal(limpiarTelefono('098-765-43210'), '0987654321')

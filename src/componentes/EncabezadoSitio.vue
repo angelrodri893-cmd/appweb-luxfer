@@ -17,8 +17,9 @@ watch(() => rutaActual.fullPath, cerrarPanel)
 
 <template>
   <div class="aviso-superior">
-    <p>Hoy también puedes elegirte a ti</p>
-    <RouterLink to="/agendar">Agenda tu momento <span aria-hidden="true">→</span></RouterLink>
+    <p>{{ sesion.esAdministrador ? 'Sesión administrativa activa' : 'Hoy también puedes elegirte a ti' }}</p>
+    <RouterLink v-if="sesion.esAdministrador" to="/administracion">Volver al panel <span aria-hidden="true">→</span></RouterLink>
+    <RouterLink v-else to="/agendar">Agenda tu momento <span aria-hidden="true">→</span></RouterLink>
   </div>
 
   <header class="encabezado-sitio">
@@ -50,8 +51,8 @@ watch(() => rutaActual.fullPath, cerrarPanel)
       <RouterLink to="/productos">Productos</RouterLink>
       <RouterLink to="/contacto">Contacto</RouterLink>
       <RouterLink v-if="sesion.esAdministrador" to="/administracion">Administración</RouterLink>
-      <RouterLink :to="sesion.usuario ? '/mi-cuenta' : '/acceso'">Mi cuenta</RouterLink>
-      <RouterLink class="control control--principal control--compacto" to="/agendar">
+      <RouterLink v-else :to="sesion.usuario ? '/mi-cuenta' : '/acceso'">Mi cuenta</RouterLink>
+      <RouterLink v-if="sesion.puedeAgendarCitas" class="control control--principal control--compacto" to="/agendar">
         Agendar cita
       </RouterLink>
     </nav>

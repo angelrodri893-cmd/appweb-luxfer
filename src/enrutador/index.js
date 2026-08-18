@@ -6,11 +6,11 @@ const rutas = [
   { path: '/servicios', name: 'servicios', component: () => import('../vistas/ServiciosVista.vue'), meta: { titulo: 'Servicios' } },
   { path: '/servicios/:ruta', name: 'detalle-servicio', component: () => import('../vistas/DetalleServicioVista.vue'), meta: { titulo: 'Detalle del servicio' } },
   { path: '/productos', name: 'productos', component: () => import('../vistas/ProductosVista.vue'), meta: { titulo: 'Productos' } },
-  { path: '/agendar', name: 'agendar', component: () => import('../vistas/AgendarVista.vue'), meta: { titulo: 'Agendar cita', requiereAutenticacion: true } },
+  { path: '/agendar', name: 'agendar', component: () => import('../vistas/AgendarVista.vue'), meta: { titulo: 'Agendar cita', requiereAutenticacion: true, exclusivaCliente: true } },
   { path: '/contacto', name: 'contacto', component: () => import('../vistas/ContactoVista.vue'), meta: { titulo: 'Contacto' } },
   { path: '/acceso', name: 'acceso', component: () => import('../vistas/AccesoVista.vue'), meta: { titulo: 'Acceso' } },
   { path: '/registro', name: 'registro', component: () => import('../vistas/RegistroVista.vue'), meta: { titulo: 'Crear cuenta' } },
-  { path: '/mi-cuenta', name: 'mi-cuenta', component: () => import('../vistas/MiCuentaVista.vue'), meta: { titulo: 'Mi cuenta', requiereAutenticacion: true } },
+  { path: '/mi-cuenta', name: 'mi-cuenta', component: () => import('../vistas/MiCuentaVista.vue'), meta: { titulo: 'Mi cuenta', requiereAutenticacion: true, exclusivaCliente: true } },
   {
     path: '/administracion',
     name: 'administracion',
@@ -38,6 +38,10 @@ enrutador.beforeEach((ruta) => {
 
   if (ruta.meta.requiereAdministrador && !sesion.esAdministrador) {
     return { name: 'mi-cuenta' }
+  }
+
+  if (ruta.meta.exclusivaCliente && !sesion.puedeAgendarCitas) {
+    return { name: 'administracion' }
   }
 
   if ((ruta.name === 'acceso' || ruta.name === 'registro') && sesion.usuario) {
