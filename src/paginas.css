@@ -1198,7 +1198,37 @@ select:disabled {
 
 .cita-administracion textarea {
   width: 100%;
+  min-height: 64px;
   margin-bottom: 12px;
+  padding: 11px 14px;
+  color: var(--texto-principal);
+  background: var(--crema-50);
+  border: 1px solid rgba(61, 36, 48, 0.24);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.cita-administracion textarea:focus {
+  border-color: var(--rosa-500);
+  outline: 3px solid rgba(216, 143, 160, 0.2);
+}
+
+.cita-administracion textarea:disabled {
+  color: var(--texto-suave);
+  background: var(--crema-100);
+  border-color: var(--borde-suave);
+  cursor: not-allowed;
+  opacity: 1;
+  resize: none;
+}
+
+.nota-cita-bloqueada {
+  display: block;
+  margin: -4px 0 12px;
+  color: var(--texto-suave);
+  font-size: 11px;
 }
 
 .bloqueos-administracion {
