@@ -5,7 +5,7 @@ const clavePublicaSupabase = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 
 if (!urlSupabase || !clavePublicaSupabase) {
   throw new Error(
-    'Faltan VITE_SUPABASE_URL o VITE_SUPABASE_PUBLISHABLE_KEY en el archivo .env.local.',
+    'Faltan VITE_SUPABASE_URL o VITE_SUPABASE_PUBLISHABLE_KEY. Configúralas en .env.local o en las variables de entorno de Vercel.',
   )
 }
 
