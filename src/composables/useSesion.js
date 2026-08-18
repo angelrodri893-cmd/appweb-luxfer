@@ -1,5 +1,6 @@
 import { readonly, reactive } from 'vue'
 import { supabase } from '../servicios/supabase'
+import { rolPuedeAgendarCitas } from '../utilidades/permisos'
 
 const sesion = reactive({
   usuario: null,
@@ -8,6 +9,9 @@ const sesion = reactive({
   inicializada: false,
   get esAdministrador() {
     return this.perfil?.rol === 'administrador'
+  },
+  get puedeAgendarCitas() {
+    return rolPuedeAgendarCitas(this.perfil?.rol)
   },
 })
 

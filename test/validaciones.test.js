@@ -9,6 +9,13 @@ import {
   obtenerMensajeError,
   telefonoValido,
 } from '../src/utilidades/validaciones.js'
+import { rolPuedeAgendarCitas } from '../src/utilidades/permisos.js'
+
+test('reserva citas únicamente desde cuentas no administrativas', () => {
+  assert.equal(rolPuedeAgendarCitas('administrador'), false)
+  assert.equal(rolPuedeAgendarCitas('cliente'), true)
+  assert.equal(rolPuedeAgendarCitas(undefined), true)
+})
 
 test('limpia y limita el teléfono a diez dígitos', () => {
   assert.equal(limpiarTelefono('098-765-43210'), '0987654321')

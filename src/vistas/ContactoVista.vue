@@ -1,3 +1,9 @@
+<script setup>
+import { useSesion } from '../composables/useSesion'
+
+const sesion = useSesion()
+</script>
+
 <template>
   <section class="cabecera-pagina">
     <p class="etiqueta-bloque"><span></span>Estamos para ayudarte</p>
@@ -13,7 +19,7 @@
     <article class="tarjeta-contacto-principal">
       <span aria-hidden="true">✦</span><h2>¿Deseas solicitar una cita?</h2>
       <p>Crea tu cuenta para consultar servicios, horas libres y guardar tu solicitud.</p>
-      <div class="grupo-acciones"><RouterLink class="control control--principal" to="/agendar">Agendar cita</RouterLink><a class="control control--borde" href="https://www.whatsapp.com/" target="_blank" rel="noopener noreferrer">Ir a WhatsApp</a></div>
+      <div class="grupo-acciones"><RouterLink v-if="sesion.puedeAgendarCitas" class="control control--principal" to="/agendar">Agendar cita</RouterLink><a class="control control--borde" href="https://www.whatsapp.com/" target="_blank" rel="noopener noreferrer">Ir a WhatsApp</a></div>
     </article>
   </section>
 </template>

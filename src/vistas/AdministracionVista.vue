@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useSesion } from '../composables/useSesion'
+import { useRouter } from 'vue-router'
+import { cerrarSesion, useSesion } from '../composables/useSesion'
 import { mostrarNotificacion } from '../composables/useNotificacion'
 import {
   crearBloqueo,
@@ -16,6 +17,7 @@ import { eliminarImagenCatalogo, subirImagenCatalogo } from '../servicios/almace
 import { listarProductos, listarServicios, obtenerUrlImagen } from '../servicios/catalogos'
 import { formatearDinero, formatearFecha, obtenerMensajeError } from '../utilidades/validaciones'
 
+const enrutador = useRouter()
 const sesion = useSesion()
 const seccionActiva = ref('agenda')
 const citas = ref([])
@@ -27,6 +29,7 @@ const cargando = ref(true)
 const errorPagina = ref('')
 const notasCitas = reactive({})
 const procesandoCita = ref('')
+const cerrandoSesion = ref(false)
 
 const fechaEcuador = (valor) => {
   const partes = new Intl.DateTimeFormat('en-US', {
@@ -114,6 +117,18 @@ const cambiarEstado = async (cita, estado) => {
     errorPagina.value = obtenerMensajeError(error, 'No pudimos actualizar la cita.')
   } finally {
     procesandoCita.value = ''
+  }
+}
+
+const salir = async () => {
+  cerrandoSesion.value = true
+  errorPagina.value = ''
+  try {
+    await cerrarSesion()
+    await enrutador.replace('/')
+  } catch (error) {
+    errorPagina.value = obtenerMensajeError(error, 'No pudimos cerrar la sesión.')
+    cerrandoSesion.value = false
   }
 }
 
@@ -242,7 +257,7 @@ onMounted(cargarAdministracion)
 <template>
   <section class="cabecera-administracion">
     <div><p class="etiqueta-bloque"><span></span>Panel LuxFer</p><h1>Administración del centro.</h1><p>Gestiona solicitudes, disponibilidad y tarjetas del catálogo desde un solo lugar.</p></div>
-    <RouterLink class="control control--borde" to="/mi-cuenta">Ver mi cuenta</RouterLink>
+    <button class="control control--borde" type="button" :disabled="cerrandoSesion" @click="salir">{{ cerrandoSesion ? 'Cerrando…' : 'Cerrar sesión' }}</button>
   </section>
 
   <section class="panel-administracion">
