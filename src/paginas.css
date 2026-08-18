@@ -867,12 +867,6 @@ select:disabled {
   align-items: stretch;
 }
 
-.contacto-pagina__datos article a {
-  color: var(--rosa-600);
-  font-size: 14px;
-  font-weight: 600;
-}
-
 .tarjeta-contacto-principal {
   display: flex;
   min-height: 420px;

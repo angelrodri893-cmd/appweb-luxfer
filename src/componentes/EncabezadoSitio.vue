@@ -49,7 +49,7 @@ watch(() => rutaActual.fullPath, cerrarPanel)
       <RouterLink to="/">Inicio</RouterLink>
       <RouterLink to="/servicios">Servicios</RouterLink>
       <RouterLink to="/productos">Productos</RouterLink>
-      <RouterLink v-if="sesion.puedeAgendarCitas" to="/contacto">Contacto</RouterLink>
+      <RouterLink v-if="sesion.puedeVerContacto" to="/contacto">Contacto</RouterLink>
       <RouterLink v-if="sesion.esAdministrador" to="/administracion">Administración</RouterLink>
       <RouterLink v-else :to="sesion.usuario ? '/mi-cuenta' : '/acceso'">Mi cuenta</RouterLink>
       <RouterLink v-if="sesion.puedeAgendarCitas" class="control control--principal control--compacto" to="/agendar">
