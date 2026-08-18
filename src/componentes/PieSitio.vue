@@ -17,13 +17,13 @@ const sesion = useSesion()
       <nav aria-label="Navegación del pie de página">
         <RouterLink to="/servicios">Servicios</RouterLink>
         <RouterLink to="/productos">Productos</RouterLink>
-        <RouterLink to="/contacto">Contacto</RouterLink>
+        <RouterLink v-if="sesion.puedeVerContacto" to="/contacto">Contacto</RouterLink>
         <RouterLink v-if="sesion.puedeAgendarCitas" to="/agendar">Citas</RouterLink>
       </nav>
     </div>
     <div class="pie-sitio__inferior">
       <span>© {{ periodoActual }} LuxFer</span>
-      <a href="mailto:info.luxferr@gmail.com">info.luxferr@gmail.com</a>
+      <span>info.luxferr@gmail.com</span>
     </div>
   </footer>
 </template>
