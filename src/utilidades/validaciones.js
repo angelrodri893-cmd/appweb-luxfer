@@ -1,3 +1,5 @@
+import { esFechaLaborableEcuador } from './fechas.js'
+
 export const TELEFONO_PATRON = /^[0-9]{9,10}$/
 
 export const limpiarTelefono = (valor = '') => valor.replace(/\D/g, '').slice(0, 10)
@@ -7,16 +9,8 @@ export const telefonoValido = (valor = '') => TELEFONO_PATRON.test(valor)
 export const claveValida = (valor = '') =>
   valor.length >= 8 && /[A-Za-z]/.test(valor) && /[0-9]/.test(valor)
 
-export const fechaLaborableValida = (fecha) => {
-  if (!fecha) return false
-
-  const fechaLocal = new Date(`${fecha}T00:00:00`)
-  const dia = fechaLocal.getDay()
-  const ahora = new Date()
-  ahora.setHours(0, 0, 0, 0)
-
-  return fechaLocal >= ahora && dia >= 1 && dia <= 6
-}
+export const fechaLaborableValida = (fecha, ahora = new Date()) =>
+  esFechaLaborableEcuador(fecha, ahora)
 
 export const convertirFechaHora = (fecha, hora) => `${fecha}T${hora}:00-05:00`
 

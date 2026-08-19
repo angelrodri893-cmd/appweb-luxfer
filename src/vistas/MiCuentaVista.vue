@@ -1,9 +1,10 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { mostrarNotificacion } from '../composables/useNotificacion'
 import { cerrarSesion, useSesion } from '../composables/useSesion'
 import { cancelarMiCita, listarMisCitas, obtenerHorariosDisponibles, reprogramarMiCita } from '../servicios/citas'
+import { obtenerFechaEcuador, obtenerProximaCita } from '../utilidades/fechas'
 import { convertirFechaHora, fechaLaborableValida, formatearFecha, obtenerMensajeError } from '../utilidades/validaciones'
 
 const enrutador = useRouter()
@@ -13,14 +14,14 @@ const cargando = ref(true)
 const cerrando = ref(false)
 const errorPagina = ref('')
 const citaReprogramar = ref(null)
+const modalReprogramacion = ref(null)
 const reprogramacion = reactive({ fecha: '', hora: '', horarios: [], cargando: false, guardando: false, error: '' })
 
-const ahoraLocal = new Date()
-ahoraLocal.setMinutes(ahoraLocal.getMinutes() - ahoraLocal.getTimezoneOffset())
-const hoy = ahoraLocal.toISOString().split('T')[0]
+const hoy = obtenerFechaEcuador()
 const citasPendientes = computed(() => citas.value.filter((cita) => cita.estado === 'pendiente').length)
 const citasCompletadas = computed(() => citas.value.filter((cita) => cita.estado === 'completada').length)
-const proximaCita = computed(() => citas.value.find((cita) => ['pendiente', 'confirmada'].includes(cita.estado) && new Date(cita.inicio) > new Date()))
+const proximaCita = computed(() => obtenerProximaCita(citas.value))
+let elementoFocoAnterior
 
 const puedeModificar = (cita) => ['pendiente', 'confirmada'].includes(cita.estado)
   && new Date(cita.inicio).getTime() - Date.now() >= 24 * 60 * 60 * 1000
@@ -42,8 +43,18 @@ const cancelarCita = async (cita) => {
 }
 
 const abrirReprogramacion = (cita) => {
+  elementoFocoAnterior = document.activeElement
   citaReprogramar.value = cita
   Object.assign(reprogramacion, { fecha: '', hora: '', horarios: [], cargando: false, guardando: false, error: '' })
+}
+
+const cerrarReprogramacion = () => {
+  citaReprogramar.value = null
+  nextTick(() => elementoFocoAnterior?.focus())
+}
+
+const cerrarModalConEscape = (evento) => {
+  if (evento.key === 'Escape' && citaReprogramar.value) cerrarReprogramacion()
 }
 
 const consultarHorasReprogramacion = async () => {
@@ -68,7 +79,7 @@ const guardarReprogramacion = async () => {
   reprogramacion.guardando = true
   try {
     await reprogramarMiCita(citaReprogramar.value.id, convertirFechaHora(reprogramacion.fecha, reprogramacion.hora))
-    citaReprogramar.value = null
+    cerrarReprogramacion()
     mostrarNotificacion({ titulo: 'Cambio solicitado', mensaje: 'La cita volvió al estado pendiente para su revisión.' })
     await cargarCuenta()
   } catch (error) { reprogramacion.error = obtenerMensajeError(error, 'No pudimos reprogramar la cita.') }
@@ -81,7 +92,17 @@ const salir = async () => {
   catch { errorPagina.value = 'No pudimos cerrar la sesión.'; cerrando.value = false }
 }
 
-onMounted(cargarCuenta)
+watch(citaReprogramar, async (cita) => {
+  if (!cita) return
+  await nextTick()
+  modalReprogramacion.value?.querySelector('input, select, button')?.focus()
+})
+
+onMounted(() => {
+  cargarCuenta()
+  document.addEventListener('keydown', cerrarModalConEscape)
+})
+onBeforeUnmount(() => document.removeEventListener('keydown', cerrarModalConEscape))
 </script>
 
 <template>
@@ -105,10 +126,10 @@ onMounted(cargarCuenta)
     </template>
   </section>
 
-  <div v-if="citaReprogramar" class="fondo-modal" @click.self="citaReprogramar = null">
-    <form class="tarjeta-modal" @submit.prevent="guardarReprogramacion">
-      <button class="cerrar-modal" type="button" aria-label="Cerrar" @click="citaReprogramar = null">×</button><p class="etiqueta-bloque"><span></span>Reprogramar</p><h2>{{ citaReprogramar.servicios?.nombre }}</h2><p>La cita volverá a revisión y debe conservar al menos 24 horas de anticipación.</p>
-      <p v-if="reprogramacion.error" class="mensaje-formulario mensaje-formulario--error">{{ reprogramacion.error }}</p>
+  <div v-if="citaReprogramar" class="fondo-modal" @click.self="cerrarReprogramacion">
+    <form ref="modalReprogramacion" class="tarjeta-modal" role="dialog" aria-modal="true" aria-labelledby="titulo-reprogramacion" @submit.prevent="guardarReprogramacion">
+      <button class="cerrar-modal" type="button" aria-label="Cerrar" @click="cerrarReprogramacion">×</button><p class="etiqueta-bloque"><span></span>Reprogramar</p><h2 id="titulo-reprogramacion">{{ citaReprogramar.servicios?.nombre }}</h2><p>La cita volverá a revisión y debe conservar al menos 24 horas de anticipación.</p>
+      <p v-if="reprogramacion.error" class="mensaje-formulario mensaje-formulario--error" role="alert">{{ reprogramacion.error }}</p>
       <div class="campo-formulario"><label for="nueva-fecha">Nueva fecha</label><input id="nueva-fecha" v-model="reprogramacion.fecha" type="date" :min="hoy" required @change="consultarHorasReprogramacion" /></div>
       <div class="campo-formulario"><label for="nueva-hora">Hora disponible</label><select id="nueva-hora" v-model="reprogramacion.hora" required :disabled="reprogramacion.cargando"><option value="" disabled>{{ reprogramacion.cargando ? 'Consultando…' : reprogramacion.horarios.length ? 'Selecciona una hora' : 'Sin horas disponibles' }}</option><option v-for="hora in reprogramacion.horarios" :key="hora" :value="hora">{{ hora }}</option></select></div>
       <button class="control control--principal" type="submit" :disabled="reprogramacion.guardando">{{ reprogramacion.guardando ? 'Guardando…' : 'Solicitar cambio' }}</button>

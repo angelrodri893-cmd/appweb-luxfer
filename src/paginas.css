@@ -182,6 +182,7 @@
 }
 
 .tarjeta-catalogo h2,
+.tarjeta-catalogo h3,
 .tarjeta-producto h2,
 .incluye-servicio h2,
 .tarjeta-formulario h2,
@@ -366,9 +367,9 @@
 
 .tarjeta-producto__visual {
   position: relative;
-  height: clamp(220px, 20vw, 250px);
-  min-height: 220px;
-  padding: 22px;
+  height: 300px;
+  min-height: 300px;
+  padding: 0;
   background: linear-gradient(145deg, var(--crema-50), var(--rosa-50));
 }
 
@@ -909,6 +910,7 @@ select:disabled {
   }
 
   .tarjeta-producto__visual {
+    height: 260px;
     min-height: 260px;
   }
 }
@@ -936,7 +938,6 @@ select:disabled {
   margin-top: 40px;
 }
 
-.tarjeta-servicio__imagen,
 .tarjeta-catalogo__figura img,
 .tarjeta-producto__visual img,
 .detalle-servicio__visual > img,
@@ -944,22 +945,6 @@ select:disabled {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.tarjeta-producto__visual img {
-  object-fit: contain;
-}
-
-.tarjeta-servicio__imagen {
-  position: absolute;
-  inset: 0;
-  opacity: 0.3;
-}
-
-.tarjeta-servicio__contenido,
-.tarjeta-servicio__numero {
-  position: relative;
-  z-index: 1;
 }
 
 .tarjeta-catalogo__figura {

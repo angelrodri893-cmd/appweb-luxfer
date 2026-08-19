@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import imagenPortada from '../assets/inicio-luxfer.jpg'
 import { useSesion } from '../composables/useSesion'
 import { listarProductos, listarServicios, obtenerUrlImagen } from '../servicios/catalogos'
-import { formatearDinero } from '../utilidades/validaciones'
+import { formatearDinero, formatearPrecioServicio } from '../utilidades/validaciones'
 
 const sesion = useSesion()
 const servicios = ref([])
@@ -59,11 +59,21 @@ onMounted(async () => {
     </div>
     <div v-if="cargando" class="estado-vacio estado-vacio--interno"><h2>Cargando servicios…</h2></div>
     <div v-else class="lista-servicios">
-      <article v-for="(servicio, indice) in servicios" :key="servicio.id" class="tarjeta-servicio" :class="`tarjeta-servicio--${['rosa', 'arena', 'salvia'][indice % 3]}`">
-        <div class="tarjeta-servicio__numero">{{ String(indice + 1).padStart(2, '0') }}</div>
-        <img v-if="servicio.imagen_ruta" class="tarjeta-servicio__imagen" :src="obtenerUrlImagen(servicio.imagen_ruta)" :alt="servicio.nombre" loading="lazy" decoding="async" />
-        <div v-else class="tarjeta-servicio__adorno" aria-hidden="true"><span class="tarjeta-servicio__aro"></span><span class="tarjeta-servicio__envase"></span></div>
-        <div class="tarjeta-servicio__contenido"><h3>{{ servicio.nombre }}</h3><p>{{ servicio.descripcion }}</p><RouterLink :to="{ name: 'detalle-servicio', params: { ruta: servicio.slug } }">Conocer más <span>↗</span></RouterLink></div>
+      <article v-for="(servicio, indice) in servicios" :key="servicio.id" class="tarjeta-catalogo" :class="`tarjeta-catalogo--${['rosa', 'arena', 'salvia'][indice % 3]}`">
+        <span class="tarjeta-catalogo__numero">{{ String(indice + 1).padStart(2, '0') }}</span>
+        <div class="tarjeta-catalogo__figura" :class="{ 'tarjeta-catalogo__figura--imagen': servicio.imagen_ruta }">
+          <img v-if="servicio.imagen_ruta" :src="obtenerUrlImagen(servicio.imagen_ruta)" :alt="servicio.nombre" loading="lazy" decoding="async" />
+          <span v-else aria-hidden="true"></span>
+        </div>
+        <div class="tarjeta-catalogo__contenido">
+          <p class="tarjeta-catalogo__tipo">{{ servicio.categorias_servicio?.nombre }}</p>
+          <h3>{{ servicio.nombre }}</h3>
+          <p>{{ servicio.descripcion }}</p>
+        </div>
+        <footer class="tarjeta-catalogo__pie">
+          <strong><span>{{ formatearPrecioServicio(servicio.precio_desde, servicio.precio_hasta) }}</span><small>{{ servicio.duracion_minutos }} min</small></strong>
+          <RouterLink class="enlace-simple" :to="{ name: 'detalle-servicio', params: { ruta: servicio.slug } }">Conocer más <span aria-hidden="true">→</span></RouterLink>
+        </footer>
       </article>
     </div>
   </section>

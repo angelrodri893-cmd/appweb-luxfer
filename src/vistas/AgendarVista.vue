@@ -6,6 +6,7 @@ import { refrescarSesion, useSesion } from '../composables/useSesion'
 import { listarServicios } from '../servicios/catalogos'
 import { crearCita, obtenerHorariosDisponibles } from '../servicios/citas'
 import { supabase } from '../servicios/supabase'
+import { obtenerFechaEcuador } from '../utilidades/fechas'
 import {
   convertirFechaHora,
   fechaLaborableValida,
@@ -24,9 +25,7 @@ const cargandoHorarios = ref(false)
 const enviando = ref(false)
 const errores = reactive({ nombre: '', telefono: '', fecha: '', hora: '', general: '' })
 
-const ahoraLocal = new Date()
-ahoraLocal.setMinutes(ahoraLocal.getMinutes() - ahoraLocal.getTimezoneOffset())
-const hoy = ahoraLocal.toISOString().split('T')[0]
+const hoy = obtenerFechaEcuador()
 
 const solicitud = reactive({ nombre: '', telefono: '', servicio: '', fecha: '', hora: '', nota: '' })
 const servicioElegido = computed(() => servicios.value.find((item) => item.id === solicitud.servicio))
