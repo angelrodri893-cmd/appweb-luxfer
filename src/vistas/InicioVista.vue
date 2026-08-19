@@ -60,13 +60,15 @@ onMounted(async () => {
     <div v-if="cargando" class="estado-vacio estado-vacio--interno"><h2>Cargando servicios…</h2></div>
     <div v-else class="lista-servicios">
       <article v-for="(servicio, indice) in servicios" :key="servicio.id" class="tarjeta-catalogo" :class="`tarjeta-catalogo--${['rosa', 'arena', 'salvia'][indice % 3]}`">
-        <span class="tarjeta-catalogo__numero">{{ String(indice + 1).padStart(2, '0') }}</span>
         <div class="tarjeta-catalogo__figura" :class="{ 'tarjeta-catalogo__figura--imagen': servicio.imagen_ruta }">
           <img v-if="servicio.imagen_ruta" :src="obtenerUrlImagen(servicio.imagen_ruta)" :alt="servicio.nombre" loading="lazy" decoding="async" />
           <span v-else aria-hidden="true"></span>
         </div>
         <div class="tarjeta-catalogo__contenido">
-          <p class="tarjeta-catalogo__tipo">{{ servicio.categorias_servicio?.nombre }}</p>
+          <div class="tarjeta-catalogo__meta">
+            <span class="tarjeta-catalogo__numero">{{ String(indice + 1).padStart(2, '0') }}</span>
+            <p class="tarjeta-catalogo__tipo">{{ servicio.categorias_servicio?.nombre }}</p>
+          </div>
           <h3>{{ servicio.nombre }}</h3>
           <p>{{ servicio.descripcion }}</p>
         </div>
