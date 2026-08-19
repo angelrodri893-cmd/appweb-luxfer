@@ -20,6 +20,9 @@
   --texto-principal: #2e2729;
   --texto-suave: #74696c;
   --borde-suave: rgba(61, 36, 48, 0.14);
+  --borde-tarjeta: rgba(61, 36, 48, 0.16);
+  --sombra-tarjeta: 0 12px 32px rgba(61, 36, 48, 0.08);
+  --sombra-tarjeta-hover: 0 20px 44px rgba(61, 36, 48, 0.13);
   --blanco: #fff;
   --fuente-encabezados: 'Playfair Display', Georgia, serif;
   --fuente-logo: 'Cormorant Garamond', 'Times New Roman', serif;
@@ -566,14 +569,16 @@ a:focus-visible {
   min-height: 510px;
   padding: 25px;
   overflow: hidden;
+  border: 1px solid var(--borde-tarjeta);
   border-radius: 24px;
+  box-shadow: var(--sombra-tarjeta);
   transition:
     transform 220ms ease,
     box-shadow 220ms ease;
 }
 
 .tarjeta-servicio:hover {
-  box-shadow: 0 24px 50px rgba(61, 36, 48, 0.13);
+  box-shadow: var(--sombra-tarjeta-hover);
   transform: translateY(-7px);
 }
 
@@ -871,8 +876,28 @@ a:focus-visible {
 }
 
 .pie-sitio {
+  color: rgba(255, 255, 255, 0.82);
   padding: 62px clamp(22px, 6vw, 94px) 25px;
-  background: var(--crema-50);
+  background: var(--ciruela-950);
+}
+
+.pie-sitio .marca {
+  color: var(--blanco);
+}
+
+.pie-sitio .marca__inicial {
+  color: var(--rosa-200);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(242, 214, 220, 0.42);
+  box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.04);
+}
+
+.pie-sitio .marca__nombre {
+  text-shadow: none;
+}
+
+.pie-sitio .marca small {
+  color: rgba(255, 255, 255, 0.58);
 }
 
 .pie-sitio__principal {
@@ -886,7 +911,7 @@ a:focus-visible {
 .pie-sitio__principal > p {
   max-width: 420px;
   margin: 2px 0 0;
-  color: var(--texto-suave);
+  color: rgba(255, 255, 255, 0.64);
   font-size: 15px;
   line-height: 1.75;
 }
@@ -898,22 +923,31 @@ a:focus-visible {
 }
 
 .pie-sitio__principal nav a {
-  color: var(--texto-suave);
+  color: rgba(255, 255, 255, 0.72);
   font-size: 14px;
   text-decoration: none;
 }
 
 .pie-sitio__principal nav a:hover {
-  color: var(--rosa-500);
+  color: var(--rosa-200);
 }
 
 .pie-sitio__inferior {
   display: flex;
   justify-content: space-between;
   padding-top: 21px;
-  color: #948a8d;
-  border-top: 1px solid var(--borde-suave);
+  color: rgba(255, 255, 255, 0.52);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
   font-size: 12px;
+}
+
+.pie-sitio__inferior a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+.pie-sitio a:focus-visible {
+  outline-color: var(--rosa-300);
 }
 
 @keyframes mostrar-contenido {

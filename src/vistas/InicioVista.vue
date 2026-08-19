@@ -41,7 +41,7 @@ onMounted(async () => {
       </div>
     </div>
     <div class="portada__imagen">
-      <img :src="imagenPortada" alt="Cliente recibiendo un tratamiento de belleza relajante" />
+      <img :src="imagenPortada" alt="Cliente recibiendo un tratamiento de belleza relajante" decoding="async" fetchpriority="high" />
       <div class="portada__distintivo"><span aria-hidden="true">✦</span><p><strong>Tu momento</strong><small>de cuidado y calma</small></p></div>
     </div>
   </section>
@@ -61,7 +61,7 @@ onMounted(async () => {
     <div v-else class="lista-servicios">
       <article v-for="(servicio, indice) in servicios" :key="servicio.id" class="tarjeta-servicio" :class="`tarjeta-servicio--${['rosa', 'arena', 'salvia'][indice % 3]}`">
         <div class="tarjeta-servicio__numero">{{ String(indice + 1).padStart(2, '0') }}</div>
-        <img v-if="servicio.imagen_ruta" class="tarjeta-servicio__imagen" :src="obtenerUrlImagen(servicio.imagen_ruta)" :alt="servicio.nombre" />
+        <img v-if="servicio.imagen_ruta" class="tarjeta-servicio__imagen" :src="obtenerUrlImagen(servicio.imagen_ruta)" :alt="servicio.nombre" loading="lazy" decoding="async" />
         <div v-else class="tarjeta-servicio__adorno" aria-hidden="true"><span class="tarjeta-servicio__aro"></span><span class="tarjeta-servicio__envase"></span></div>
         <div class="tarjeta-servicio__contenido"><h3>{{ servicio.nombre }}</h3><p>{{ servicio.descripcion }}</p><RouterLink :to="{ name: 'detalle-servicio', params: { ruta: servicio.slug } }">Conocer más <span>↗</span></RouterLink></div>
       </article>
@@ -77,7 +77,7 @@ onMounted(async () => {
     <div class="cabecera-bloque"><div><p class="etiqueta-bloque"><span></span>Cuidado en casa</p><h2 id="nombre-productos">Productos para acompañar tu rutina.</h2></div><RouterLink class="enlace-simple" to="/productos">Ver productos <span>→</span></RouterLink></div>
     <div class="rejilla-productos rejilla-productos--inicio">
       <article v-for="producto in productos" :key="producto.id" class="tarjeta-producto">
-        <div class="tarjeta-producto__visual"><img v-if="producto.imagen_ruta" :src="obtenerUrlImagen(producto.imagen_ruta)" :alt="producto.nombre" /><span v-else aria-hidden="true"></span></div>
+        <div class="tarjeta-producto__visual" :class="{ 'tarjeta-producto__visual--imagen': producto.imagen_ruta }"><img v-if="producto.imagen_ruta" :src="obtenerUrlImagen(producto.imagen_ruta)" :alt="producto.nombre" loading="lazy" decoding="async" /><span v-else aria-hidden="true"></span></div>
         <div class="tarjeta-producto__contenido"><small>{{ producto.categoria }}</small><h3>{{ producto.nombre }}</h3><strong>{{ formatearDinero(producto.precio) }}</strong></div>
       </article>
     </div>

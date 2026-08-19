@@ -32,6 +32,15 @@ export const crearSlug = (texto = '') =>
 export const formatearDinero = (valor) =>
   new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD' }).format(Number(valor || 0))
 
+export const formatearPrecioServicio = (precioDesde, precioHasta) => {
+  const desde = formatearDinero(precioDesde)
+  const hasta = Number(precioHasta)
+
+  return Number.isFinite(hasta) && hasta > Number(precioDesde)
+    ? `${desde} – ${formatearDinero(hasta)}`
+    : desde
+}
+
 export const formatearFecha = (fecha) =>
   new Intl.DateTimeFormat('es-EC', {
     dateStyle: 'long',
