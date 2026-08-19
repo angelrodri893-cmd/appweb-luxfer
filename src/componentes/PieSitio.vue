@@ -1,5 +1,6 @@
 <script setup>
 import { useSesion } from '../composables/useSesion'
+import { CONTACTO_LUXFER, crearEnlaceWhatsApp } from '../configuracion/contacto'
 
 const periodoActual = new Date().getFullYear()
 const sesion = useSesion()
@@ -19,11 +20,13 @@ const sesion = useSesion()
         <RouterLink to="/productos">Productos</RouterLink>
         <RouterLink v-if="sesion.puedeVerContacto" to="/contacto">Contacto</RouterLink>
         <RouterLink v-if="sesion.puedeAgendarCitas" to="/agendar">Citas</RouterLink>
+        <a :href="CONTACTO_LUXFER.telefonoEnlace">{{ CONTACTO_LUXFER.telefonoVisible }}</a>
+        <a :href="crearEnlaceWhatsApp()" target="_blank" rel="noopener noreferrer">WhatsApp</a>
       </nav>
     </div>
     <div class="pie-sitio__inferior">
       <span>© {{ periodoActual }} LuxFer</span>
-      <span>info.luxferr@gmail.com</span>
+      <a :href="`mailto:${CONTACTO_LUXFER.correo}`">{{ CONTACTO_LUXFER.correo }}</a>
     </div>
   </footer>
 </template>

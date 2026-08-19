@@ -1,15 +1,41 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSesion } from '../composables/useSesion'
 
 const panelAbierto = ref(false)
+const panelMovil = ref(false)
 const rutaActual = useRoute()
 const sesion = useSesion()
+let consultaPanelMovil
 
 const cerrarPanel = () => {
   panelAbierto.value = false
 }
+
+const sincronizarPanelMovil = (evento) => {
+  panelMovil.value = evento.matches
+  if (!evento.matches) cerrarPanel()
+}
+
+const cerrarConEscape = (evento) => {
+  if (evento.key === 'Escape' && panelAbierto.value) {
+    cerrarPanel()
+    document.querySelector('.control-panel')?.focus()
+  }
+}
+
+onMounted(() => {
+  consultaPanelMovil = window.matchMedia('(max-width: 1080px)')
+  sincronizarPanelMovil(consultaPanelMovil)
+  consultaPanelMovil.addEventListener('change', sincronizarPanelMovil)
+  document.addEventListener('keydown', cerrarConEscape)
+})
+
+onBeforeUnmount(() => {
+  consultaPanelMovil?.removeEventListener('change', sincronizarPanelMovil)
+  document.removeEventListener('keydown', cerrarConEscape)
+})
 
 // Evita que el panel movil permanezca abierto despues de navegar.
 watch(() => rutaActual.fullPath, cerrarPanel)
@@ -32,7 +58,7 @@ watch(() => rutaActual.fullPath, cerrarPanel)
     <button
       class="control-panel"
       type="button"
-      aria-label="Abrir o cerrar el menú"
+      :aria-label="panelAbierto ? 'Cerrar el menú' : 'Abrir el menú'"
       aria-controls="panel-principal"
       :aria-expanded="panelAbierto"
       @click="panelAbierto = !panelAbierto"
@@ -44,13 +70,15 @@ watch(() => rutaActual.fullPath, cerrarPanel)
       id="panel-principal"
       class="panel-principal"
       :class="{ 'panel-principal--abierto': panelAbierto }"
+      :aria-hidden="panelMovil && !panelAbierto ? 'true' : undefined"
+      :inert="panelMovil && !panelAbierto ? true : undefined"
       aria-label="Navegación principal"
     >
       <RouterLink to="/">Inicio</RouterLink>
       <RouterLink to="/servicios">Servicios</RouterLink>
       <RouterLink to="/productos">Productos</RouterLink>
       <RouterLink v-if="sesion.puedeVerContacto" to="/contacto">Contacto</RouterLink>
-      <RouterLink v-if="sesion.esAdministrador" to="/administracion">Administración</RouterLink>
+      <RouterLink v-if="sesion.esAdministrador" class="control control--administracion control--compacto" to="/administracion">Administración</RouterLink>
       <RouterLink v-else :to="sesion.usuario ? '/mi-cuenta' : '/acceso'">Mi cuenta</RouterLink>
       <RouterLink v-if="sesion.puedeAgendarCitas" class="control control--principal control--compacto" to="/agendar">
         Agendar cita

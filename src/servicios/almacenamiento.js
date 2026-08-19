@@ -1,19 +1,19 @@
 import { supabase } from './supabase'
+import { optimizarImagenCatalogo } from '../utilidades/imagenes'
 
-const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
-const limiteBytes = 5 * 1024 * 1024
+const extensionesPorTipo = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/avif': 'avif',
+}
 
 export const subirImagenCatalogo = async (archivo, carpeta) => {
-  if (!tiposPermitidos.includes(archivo.type)) {
-    throw new Error('Selecciona una imagen JPG, PNG, WEBP o AVIF.')
-  }
-
-  if (archivo.size > limiteBytes) throw new Error('La imagen no puede superar 5 MB.')
-
-  const extension = archivo.name.split('.').pop()?.toLowerCase() || 'jpg'
+  const archivoOptimizado = await optimizarImagenCatalogo(archivo)
+  const extension = extensionesPorTipo[archivoOptimizado.type] || 'webp'
   const identificador = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`
   const ruta = `${carpeta}/${identificador}.${extension}`
-  const { error } = await supabase.storage.from('catalogo').upload(ruta, archivo, {
+  const { error } = await supabase.storage.from('catalogo').upload(ruta, archivoOptimizado, {
     cacheControl: '3600',
     upsert: false,
   })

@@ -5,10 +5,14 @@ import {
   convertirFechaHora,
   crearSlug,
   fechaLaborableValida,
+  formatearPrecioServicio,
   limpiarTelefono,
   obtenerMensajeError,
   telefonoValido,
 } from '../src/utilidades/validaciones.js'
+import { CONTACTO_LUXFER, crearEnlaceWhatsAppProducto } from '../src/configuracion/contacto.js'
+import { obtenerFechaEcuador, obtenerProximaCita } from '../src/utilidades/fechas.js'
+import { calcularDimensionesImagen } from '../src/utilidades/imagenes.js'
 import { estadoCitaPermiteGestion, rolPuedeAgendarCitas, rolPuedeVerContacto } from '../src/utilidades/permisos.js'
 
 test('reserva citas únicamente desde cuentas no administrativas', () => {
@@ -59,6 +63,10 @@ test('convierte fecha y hora a la zona horaria de Ecuador', () => {
   assert.equal(convertirFechaHora('2026-08-10', '08:30'), '2026-08-10T08:30:00-05:00')
 })
 
+test('calcula la fecha actual con la zona horaria de Ecuador', () => {
+  assert.equal(obtenerFechaEcuador('2026-08-18T02:30:00.000Z'), '2026-08-17')
+})
+
 test('rechaza domingos y acepta un lunes futuro', () => {
   const fecha = new Date()
   fecha.setDate(fecha.getDate() + 1)
@@ -69,6 +77,43 @@ test('rechaza domingos y acepta un lunes futuro', () => {
 
   assert.equal(fechaLaborableValida(lunes), true)
   assert.equal(fechaLaborableValida(domingo), false)
+})
+
+test('rechaza domingos usando una fecha de referencia estable', () => {
+  const referencia = new Date('2026-08-17T12:00:00.000Z')
+  assert.equal(fechaLaborableValida('2026-08-17', referencia), true)
+  assert.equal(fechaLaborableValida('2026-08-23', referencia), false)
+  assert.equal(fechaLaborableValida('2026-08-16', referencia), false)
+})
+
+test('elige la cita futura más cercana aunque la lista esté en orden descendente', () => {
+  const citas = [
+    { id: 'lejana', estado: 'confirmada', inicio: '2026-09-20T15:00:00.000Z' },
+    { id: 'cercana', estado: 'pendiente', inicio: '2026-08-20T15:00:00.000Z' },
+    { id: 'pasada', estado: 'confirmada', inicio: '2026-08-01T15:00:00.000Z' },
+  ]
+
+  assert.equal(obtenerProximaCita(citas, '2026-08-18T12:00:00.000Z').id, 'cercana')
+})
+
+test('muestra precio simple o rango según los valores del servicio', () => {
+  assert.equal(formatearPrecioServicio(15, null), '$15,00')
+  assert.equal(formatearPrecioServicio(15, 18), '$15,00 – $18,00')
+})
+
+test('construye el contacto internacional y el mensaje de producto para WhatsApp', () => {
+  assert.equal(CONTACTO_LUXFER.telefonoInternacional, '+593986066172')
+  const enlace = crearEnlaceWhatsAppProducto('Ritual Botánico')
+  assert.ok(enlace.startsWith('https://wa.me/593986066172?text='))
+  assert.equal(
+    decodeURIComponent(enlace.split('?text=')[1]),
+    'Hola LuxFer, quisiera consultar la disponibilidad de Ritual Botánico.',
+  )
+})
+
+test('reduce imágenes grandes sin deformarlas y conserva las pequeñas', () => {
+  assert.deepEqual(calcularDimensionesImagen(4000, 2000), { ancho: 1600, alto: 800 })
+  assert.deepEqual(calcularDimensionesImagen(800, 1200), { ancho: 800, alto: 1200 })
 })
 
 test('traduce un conflicto de agenda a un mensaje comprensible', () => {

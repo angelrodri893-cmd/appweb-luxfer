@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { cerrarSesion, useSesion } from '../composables/useSesion'
 import { mostrarNotificacion } from '../composables/useNotificacion'
@@ -16,7 +16,8 @@ import {
 import { eliminarImagenCatalogo, subirImagenCatalogo } from '../servicios/almacenamiento'
 import { listarProductos, listarServicios, obtenerUrlImagen } from '../servicios/catalogos'
 import { estadoCitaPermiteGestion } from '../utilidades/permisos'
-import { formatearDinero, formatearFecha, obtenerMensajeError } from '../utilidades/validaciones'
+import { obtenerFechaEcuador } from '../utilidades/fechas'
+import { formatearDinero, formatearFecha, formatearPrecioServicio, obtenerMensajeError } from '../utilidades/validaciones'
 
 const enrutador = useRouter()
 const sesion = useSesion()
@@ -32,16 +33,8 @@ const notasCitas = reactive({})
 const procesandoCita = ref('')
 const cerrandoSesion = ref(false)
 
-const fechaEcuador = (valor) => {
-  const partes = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Guayaquil', year: 'numeric', month: '2-digit', day: '2-digit',
-  }).formatToParts(new Date(valor))
-  const obtener = (tipo) => partes.find((parte) => parte.type === tipo)?.value
-  return `${obtener('year')}-${obtener('month')}-${obtener('day')}`
-}
-
 const ahora = new Date()
-const hoy = fechaEcuador(ahora)
+const hoy = obtenerFechaEcuador(ahora)
 const fechaSeleccionada = ref(hoy)
 const mesVisible = ref(new Date(`${hoy}T12:00:00`))
 const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
@@ -50,7 +43,7 @@ const resumen = computed(() => ({
   pendientes: citas.value.filter((cita) => cita.estado === 'pendiente').length,
   confirmadas: citas.value.filter((cita) => cita.estado === 'confirmada').length,
   completadas: citas.value.filter((cita) => cita.estado === 'completada').length,
-  hoy: citas.value.filter((cita) => fechaEcuador(cita.inicio) === hoy).length,
+  hoy: citas.value.filter((cita) => obtenerFechaEcuador(cita.inicio) === hoy).length,
 }))
 
 const celdasCalendario = computed(() => {
@@ -63,13 +56,13 @@ const celdasCalendario = computed(() => {
 
   for (let dia = 1; dia <= cantidadDias; dia += 1) {
     const fecha = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`
-    const citasDia = citas.value.filter((cita) => fechaEcuador(cita.inicio) === fecha)
+    const citasDia = citas.value.filter((cita) => obtenerFechaEcuador(cita.inicio) === fecha)
     celdas.push({ fecha, dia, cantidad: citasDia.length, pendientes: citasDia.filter((cita) => cita.estado === 'pendiente').length })
   }
   return celdas
 })
 
-const citasSeleccionadas = computed(() => citas.value.filter((cita) => fechaEcuador(cita.inicio) === fechaSeleccionada.value))
+const citasSeleccionadas = computed(() => citas.value.filter((cita) => obtenerFechaEcuador(cita.inicio) === fechaSeleccionada.value))
 const tituloMes = computed(() => `${nombresMeses[mesVisible.value.getMonth()]} ${mesVisible.value.getFullYear()}`)
 
 const formularioBloqueo = reactive({ inicio: '', fin: '', motivo: '' })
@@ -85,6 +78,9 @@ const archivoServicio = ref(null)
 const archivoProducto = ref(null)
 const guardandoCatalogo = ref(false)
 const errorCatalogo = ref('')
+const modalServicio = ref(null)
+const modalProducto = ref(null)
+let elementoFocoAnterior
 
 const asignarCitas = (citasCargadas) => {
   citas.value = citasCargadas
@@ -176,6 +172,7 @@ const borrarBloqueo = async (id) => {
 }
 
 const abrirServicio = (servicio = null) => {
+  elementoFocoAnterior = document.activeElement
   Object.assign(formularioServicio, servicioVacio(), servicio ? {
     ...servicio,
     categoria_id: servicio.categorias_servicio?.id ?? '',
@@ -187,10 +184,23 @@ const abrirServicio = (servicio = null) => {
 }
 
 const abrirProducto = (producto = null) => {
+  elementoFocoAnterior = document.activeElement
   Object.assign(formularioProducto, productoVacio(), producto ?? {})
   archivoProducto.value = null
   errorCatalogo.value = ''
   editandoProducto.value = true
+}
+
+const cerrarModalCatalogo = (tipo) => {
+  if (tipo === 'servicio') editandoServicio.value = false
+  if (tipo === 'producto') editandoProducto.value = false
+  nextTick(() => elementoFocoAnterior?.focus())
+}
+
+const cerrarModalConEscape = (evento) => {
+  if (evento.key !== 'Escape') return
+  if (editandoServicio.value) cerrarModalCatalogo('servicio')
+  else if (editandoProducto.value) cerrarModalCatalogo('producto')
 }
 
 const guardarFormularioServicio = async () => {
@@ -226,7 +236,7 @@ const guardarFormularioServicio = async () => {
     // La imagen nueva ya quedo guardada; un fallo al limpiar la anterior no debe revertir el formulario.
     if (nuevaRuta && rutaAnterior) await eliminarImagenCatalogo(rutaAnterior).catch(() => {})
     servicios.value = await listarServicios({ incluirInactivos: true })
-    editandoServicio.value = false
+    cerrarModalCatalogo('servicio')
     mostrarNotificacion({ titulo: 'Servicio guardado', mensaje: `${guardado.nombre} ya está actualizado.` })
   } catch (error) {
     if (nuevaRuta) await eliminarImagenCatalogo(nuevaRuta).catch(() => {})
@@ -257,7 +267,7 @@ const guardarFormularioProducto = async () => {
     // La limpieza de la imagen reemplazada es secundaria frente al cambio del producto.
     if (nuevaRuta && rutaAnterior) await eliminarImagenCatalogo(rutaAnterior).catch(() => {})
     productos.value = await listarProductos({ incluirInactivos: true })
-    editandoProducto.value = false
+    cerrarModalCatalogo('producto')
     mostrarNotificacion({ titulo: 'Producto guardado', mensaje: `${guardado.nombre} ya está actualizado.` })
   } catch (error) {
     if (nuevaRuta) await eliminarImagenCatalogo(nuevaRuta).catch(() => {})
@@ -265,7 +275,18 @@ const guardarFormularioProducto = async () => {
   } finally { guardandoCatalogo.value = false }
 }
 
-onMounted(cargarAdministracion)
+watch([editandoServicio, editandoProducto], async ([servicioAbierto, productoAbierto]) => {
+  if (!servicioAbierto && !productoAbierto) return
+  await nextTick()
+  const modal = servicioAbierto ? modalServicio.value : modalProducto.value
+  modal?.querySelector('input, select, textarea, button')?.focus()
+})
+
+onMounted(() => {
+  cargarAdministracion()
+  document.addEventListener('keydown', cerrarModalConEscape)
+})
+onBeforeUnmount(() => document.removeEventListener('keydown', cerrarModalConEscape))
 </script>
 
 <template>
@@ -300,20 +321,20 @@ onMounted(cargarAdministracion)
 
     <template v-else-if="seccionActiva === 'servicios'">
       <header class="cabecera-seccion-admin"><div><h2>Tarjetas de servicios</h2><p>Edita precios, duración, descripción e imagen.</p></div><button class="control control--principal" type="button" @click="abrirServicio()">Nuevo servicio</button></header>
-      <div class="rejilla-admin-catalogo"><article v-for="servicio in servicios" :key="servicio.id"><img v-if="servicio.imagen_ruta" :src="obtenerUrlImagen(servicio.imagen_ruta)" :alt="servicio.nombre" /><div class="marcador-imagen" v-else aria-hidden="true">✦</div><span :class="['estado-publicacion', { inactivo: !servicio.activo }]">{{ servicio.activo ? 'Visible' : 'Oculto' }}</span><h3>{{ servicio.nombre }}</h3><p>{{ servicio.descripcion }}</p><strong>{{ formatearDinero(servicio.precio_desde) }} · {{ servicio.duracion_minutos }} min</strong><button class="control control--borde" type="button" @click="abrirServicio(servicio)">Editar tarjeta</button></article></div>
+      <div class="rejilla-admin-catalogo"><article v-for="servicio in servicios" :key="servicio.id"><img v-if="servicio.imagen_ruta" :src="obtenerUrlImagen(servicio.imagen_ruta)" :alt="servicio.nombre" loading="lazy" decoding="async" /><div class="marcador-imagen" v-else aria-hidden="true">✦</div><span :class="['estado-publicacion', { inactivo: !servicio.activo }]">{{ servicio.activo ? 'Visible' : 'Oculto' }}</span><h3>{{ servicio.nombre }}</h3><p>{{ servicio.descripcion }}</p><strong>{{ formatearPrecioServicio(servicio.precio_desde, servicio.precio_hasta) }} · {{ servicio.duracion_minutos }} min</strong><button class="control control--borde" type="button" @click="abrirServicio(servicio)">Editar tarjeta</button></article></div>
     </template>
 
     <template v-else>
       <header class="cabecera-seccion-admin"><div><h2>Tarjetas de productos</h2><p>Administra la selección que se muestra al público.</p></div><button class="control control--principal" type="button" @click="abrirProducto()">Nuevo producto</button></header>
-      <div class="rejilla-admin-catalogo"><article v-for="producto in productos" :key="producto.id"><img v-if="producto.imagen_ruta" :src="obtenerUrlImagen(producto.imagen_ruta)" :alt="producto.nombre" /><div class="marcador-imagen" v-else aria-hidden="true">✦</div><span :class="['estado-publicacion', { inactivo: !producto.activo }]">{{ producto.activo ? 'Visible' : 'Oculto' }}</span><h3>{{ producto.nombre }}</h3><p>{{ producto.descripcion }}</p><strong>{{ formatearDinero(producto.precio) }}</strong><button class="control control--borde" type="button" @click="abrirProducto(producto)">Editar tarjeta</button></article></div>
+      <div class="rejilla-admin-catalogo"><article v-for="producto in productos" :key="producto.id"><img v-if="producto.imagen_ruta" :src="obtenerUrlImagen(producto.imagen_ruta)" :alt="producto.nombre" loading="lazy" decoding="async" /><div class="marcador-imagen" v-else aria-hidden="true">✦</div><span :class="['estado-publicacion', { inactivo: !producto.activo }]">{{ producto.activo ? 'Visible' : 'Oculto' }}</span><h3>{{ producto.nombre }}</h3><p>{{ producto.descripcion }}</p><strong>{{ formatearDinero(producto.precio) }}</strong><button class="control control--borde" type="button" @click="abrirProducto(producto)">Editar tarjeta</button></article></div>
     </template>
   </section>
 
-  <div v-if="editandoServicio" class="fondo-modal" @click.self="editandoServicio = false">
-    <form class="tarjeta-modal tarjeta-modal--catalogo" @submit.prevent="guardarFormularioServicio"><button class="cerrar-modal" type="button" aria-label="Cerrar" @click="editandoServicio = false">×</button><p class="etiqueta-bloque"><span></span>{{ formularioServicio.id ? 'Editar servicio' : 'Nuevo servicio' }}</p><h2>Información de la tarjeta</h2><p v-if="errorCatalogo" class="mensaje-formulario mensaje-formulario--error">{{ errorCatalogo }}</p><div class="rejilla-formulario-admin"><div class="campo-formulario"><label for="servicio-nombre">Nombre</label><input id="servicio-nombre" v-model.trim="formularioServicio.nombre" type="text" maxlength="100" required /></div><div class="campo-formulario"><label for="servicio-categoria">Categoría</label><select id="servicio-categoria" v-model="formularioServicio.categoria_id" required><option value="" disabled>Selecciona</option><option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">{{ categoria.nombre }}</option></select></div><div class="campo-formulario campo-formulario--completo"><label for="servicio-descripcion">Descripción</label><textarea id="servicio-descripcion" v-model.trim="formularioServicio.descripcion" rows="3" maxlength="500" required></textarea></div><div class="campo-formulario"><label for="servicio-precio">Precio desde</label><input id="servicio-precio" v-model="formularioServicio.precio_desde" type="number" min="0" step="0.01" required /></div><div class="campo-formulario"><label for="servicio-precio-hasta">Precio hasta</label><input id="servicio-precio-hasta" v-model="formularioServicio.precio_hasta" type="number" min="0" step="0.01" /></div><div class="campo-formulario"><label for="servicio-duracion">Duración en minutos</label><input id="servicio-duracion" v-model="formularioServicio.duracion_minutos" type="number" min="15" max="720" step="15" required /></div><div class="campo-formulario"><label for="servicio-orden">Orden</label><input id="servicio-orden" v-model="formularioServicio.orden" type="number" min="0" /></div><div class="campo-formulario campo-formulario--completo"><label for="servicio-incluye">Incluye, un elemento por línea</label><textarea id="servicio-incluye" v-model="formularioServicio.incluyeTexto" rows="4"></textarea></div><div class="campo-formulario campo-formulario--completo"><label for="servicio-imagen">Imagen JPG, PNG, WEBP o AVIF</label><input id="servicio-imagen" type="file" accept="image/jpeg,image/png,image/webp,image/avif" @change="archivoServicio = $event.target.files[0]" /></div><label class="campo-interruptor"><input v-model="formularioServicio.activo" type="checkbox" /><span>Mostrar servicio al público</span></label></div><button class="control control--principal" type="submit" :disabled="guardandoCatalogo">{{ guardandoCatalogo ? 'Guardando…' : 'Guardar servicio' }}</button></form>
+  <div v-if="editandoServicio" class="fondo-modal" @click.self="cerrarModalCatalogo('servicio')">
+    <form ref="modalServicio" class="tarjeta-modal tarjeta-modal--catalogo" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-servicio" @submit.prevent="guardarFormularioServicio"><button class="cerrar-modal" type="button" aria-label="Cerrar" @click="cerrarModalCatalogo('servicio')">×</button><p class="etiqueta-bloque"><span></span>{{ formularioServicio.id ? 'Editar servicio' : 'Nuevo servicio' }}</p><h2 id="titulo-modal-servicio">Información de la tarjeta</h2><p v-if="errorCatalogo" class="mensaje-formulario mensaje-formulario--error" role="alert">{{ errorCatalogo }}</p><div class="rejilla-formulario-admin"><div class="campo-formulario"><label for="servicio-nombre">Nombre</label><input id="servicio-nombre" v-model.trim="formularioServicio.nombre" type="text" maxlength="100" required /></div><div class="campo-formulario"><label for="servicio-categoria">Categoría</label><select id="servicio-categoria" v-model="formularioServicio.categoria_id" required><option value="" disabled>Selecciona</option><option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">{{ categoria.nombre }}</option></select></div><div class="campo-formulario campo-formulario--completo"><label for="servicio-descripcion">Descripción</label><textarea id="servicio-descripcion" v-model.trim="formularioServicio.descripcion" rows="3" maxlength="500" required></textarea></div><div class="campo-formulario"><label for="servicio-precio">Precio desde</label><input id="servicio-precio" v-model="formularioServicio.precio_desde" type="number" min="0" step="0.01" required /></div><div class="campo-formulario"><label for="servicio-precio-hasta">Precio hasta</label><input id="servicio-precio-hasta" v-model="formularioServicio.precio_hasta" type="number" min="0" step="0.01" /></div><div class="campo-formulario"><label for="servicio-duracion">Duración en minutos</label><input id="servicio-duracion" v-model="formularioServicio.duracion_minutos" type="number" min="15" max="720" step="15" required /></div><div class="campo-formulario"><label for="servicio-orden">Orden</label><input id="servicio-orden" v-model="formularioServicio.orden" type="number" min="0" /></div><div class="campo-formulario campo-formulario--completo"><label for="servicio-incluye">Incluye, un elemento por línea</label><textarea id="servicio-incluye" v-model="formularioServicio.incluyeTexto" rows="4"></textarea></div><div class="campo-formulario campo-formulario--completo"><label for="servicio-imagen">Imagen JPG, PNG, WEBP o AVIF</label><input id="servicio-imagen" type="file" accept="image/jpeg,image/png,image/webp,image/avif" @change="archivoServicio = $event.target.files[0]" /></div><label class="campo-interruptor"><input v-model="formularioServicio.activo" type="checkbox" /><span>Mostrar servicio al público</span></label></div><button class="control control--principal" type="submit" :disabled="guardandoCatalogo">{{ guardandoCatalogo ? 'Guardando…' : 'Guardar servicio' }}</button></form>
   </div>
 
-  <div v-if="editandoProducto" class="fondo-modal" @click.self="editandoProducto = false">
-    <form class="tarjeta-modal tarjeta-modal--catalogo" @submit.prevent="guardarFormularioProducto"><button class="cerrar-modal" type="button" aria-label="Cerrar" @click="editandoProducto = false">×</button><p class="etiqueta-bloque"><span></span>{{ formularioProducto.id ? 'Editar producto' : 'Nuevo producto' }}</p><h2>Información de la tarjeta</h2><p v-if="errorCatalogo" class="mensaje-formulario mensaje-formulario--error">{{ errorCatalogo }}</p><div class="rejilla-formulario-admin"><div class="campo-formulario"><label for="producto-nombre">Nombre</label><input id="producto-nombre" v-model.trim="formularioProducto.nombre" type="text" maxlength="100" required /></div><div class="campo-formulario"><label for="producto-categoria">Categoría</label><input id="producto-categoria" v-model.trim="formularioProducto.categoria" type="text" maxlength="80" required /></div><div class="campo-formulario campo-formulario--completo"><label for="producto-descripcion">Descripción</label><textarea id="producto-descripcion" v-model.trim="formularioProducto.descripcion" rows="3" maxlength="500" required></textarea></div><div class="campo-formulario"><label for="producto-precio">Precio</label><input id="producto-precio" v-model="formularioProducto.precio" type="number" min="0" step="0.01" required /></div><div class="campo-formulario"><label for="producto-orden">Orden</label><input id="producto-orden" v-model="formularioProducto.orden" type="number" min="0" /></div><div class="campo-formulario campo-formulario--completo"><label for="producto-imagen">Imagen JPG, PNG, WEBP o AVIF</label><input id="producto-imagen" type="file" accept="image/jpeg,image/png,image/webp,image/avif" @change="archivoProducto = $event.target.files[0]" /></div><label class="campo-interruptor"><input v-model="formularioProducto.activo" type="checkbox" /><span>Mostrar producto al público</span></label></div><button class="control control--principal" type="submit" :disabled="guardandoCatalogo">{{ guardandoCatalogo ? 'Guardando…' : 'Guardar producto' }}</button></form>
+  <div v-if="editandoProducto" class="fondo-modal" @click.self="cerrarModalCatalogo('producto')">
+    <form ref="modalProducto" class="tarjeta-modal tarjeta-modal--catalogo" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-producto" @submit.prevent="guardarFormularioProducto"><button class="cerrar-modal" type="button" aria-label="Cerrar" @click="cerrarModalCatalogo('producto')">×</button><p class="etiqueta-bloque"><span></span>{{ formularioProducto.id ? 'Editar producto' : 'Nuevo producto' }}</p><h2 id="titulo-modal-producto">Información de la tarjeta</h2><p v-if="errorCatalogo" class="mensaje-formulario mensaje-formulario--error" role="alert">{{ errorCatalogo }}</p><div class="rejilla-formulario-admin"><div class="campo-formulario"><label for="producto-nombre">Nombre</label><input id="producto-nombre" v-model.trim="formularioProducto.nombre" type="text" maxlength="100" required /></div><div class="campo-formulario"><label for="producto-categoria">Categoría</label><input id="producto-categoria" v-model.trim="formularioProducto.categoria" type="text" maxlength="80" required /></div><div class="campo-formulario campo-formulario--completo"><label for="producto-descripcion">Descripción</label><textarea id="producto-descripcion" v-model.trim="formularioProducto.descripcion" rows="3" maxlength="500" required></textarea></div><div class="campo-formulario"><label for="producto-precio">Precio</label><input id="producto-precio" v-model="formularioProducto.precio" type="number" min="0" step="0.01" required /></div><div class="campo-formulario"><label for="producto-orden">Orden</label><input id="producto-orden" v-model="formularioProducto.orden" type="number" min="0" /></div><div class="campo-formulario campo-formulario--completo"><label for="producto-imagen">Imagen JPG, PNG, WEBP o AVIF</label><input id="producto-imagen" type="file" accept="image/jpeg,image/png,image/webp,image/avif" @change="archivoProducto = $event.target.files[0]" /></div><label class="campo-interruptor"><input v-model="formularioProducto.activo" type="checkbox" /><span>Mostrar producto al público</span></label></div><button class="control control--principal" type="submit" :disabled="guardandoCatalogo">{{ guardandoCatalogo ? 'Guardando…' : 'Guardar producto' }}</button></form>
   </div>
 </template>
